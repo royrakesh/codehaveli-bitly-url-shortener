@@ -1,0 +1,145 @@
+/* .wbitly-mt-5{
+  margin-top: 25px;
+}
+.wbitly-meta-bg-link{
+  background: #eee;
+    padding: 5px 20px;
+}
+th.manage-column.column-wbitly_url {
+    text-align: center;
+}
+button.generate_bitly.generate_bitly_disable.wbitly {
+    opacity: 0.7;
+    pointer-events: none;
+    transition: 1s all ease;
+}
+
+
+th#wbitly_url {
+    text-align: center;
+}
+
+.wbitly-social-share-buttons-wrapper p {
+    text-align: center;
+}
+
+.wbitly-social-share-buttons-wrapper p:after {content: '';width: 30px;height: 1px;display: block;background: #9E9E9E;margin: auto;}
+
+.wbitly_tooltip {
+ position: relative;
+    display: block;
+}
+
+.wbitly_tooltip p {
+    text-align: center;
+}
+
+.wbitly_tooltip .wbitly_tooltiptext {
+  visibility: hidden;
+  width: 140px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 27px;
+  left: 50%;
+  margin-left: -75px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.wbitly_tooltip .wbitly_tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.wbitly_tooltip:hover .wbitly_tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+.wbitly_tooltip button {
+    background: #9e9e9e42;
+    outline: 0;
+    width: 100%;
+    text-align: center;
+    border: 1px solid #eee !important;
+    cursor: pointer;
+    padding: 10px;
+    font-size: .8rem;
+}
+
+
+.wbitly-social-share-buttons {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-flow: row wrap;
+    flex-flow: row wrap;
+    box-sizing: inherit;
+    margin-top: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.wbitly-share-button {
+    font-size: 14px;
+    -webkit-box-flex: 1;
+    -ms-flex-positive: 1;
+    line-height: 34px;
+    text-align: center;
+    color: #fff;
+    background: #D14836;
+    margin-right: 5px;
+    border-radius: 6px;
+    padding: 0;
+    -webkit-transition: 0.2s all linear;
+    transition: 0.2s all linear;
+    width: 30px !important;
+    height: 30px;
+}
+
+.wbitly-share-button.wbitly-facebook {
+    background: #1877F2;
+}
+
+.wbitly-share-button.wbitly-x {
+    background: #111;
+}
+
+.wbitly-share-button a {
+    color: inherit;
+    display: block;
+}
+
+.wbitly-share-button a svg {
+    vertical-align: -2px;
+    fill: currentColor;
+    outline: none;
+    outline: none;
+    display: block;
+    margin: auto;
+    height: 30px;
+}
+
+
+span.copy_bitly_link {cursor: pointer;} */
+
+
+.wbitly-sidebar button.components-button.is-primary {
+    text-align: center;
+    margin: auto;
+    display: block;
+    margin-top: 35px;
+}

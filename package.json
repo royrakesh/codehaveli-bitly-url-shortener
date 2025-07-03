@@ -1,0 +1,25 @@
+{
+	"name": "Bitly-URL-Shortener",
+	"version": "0.1.0",
+	"description": "Bitly URL Shortener uses the functionality of Bitly API to generate Bitly short link without leaving your WordPress site.",
+	"author": "Rakesh Roy",
+	"license": "GPL-2.0-or-later",
+	"main": "build/index.js",
+	"scripts": {
+		"build:block": "wp-scripts build --webpack-copy-php --blocks-manifest --source-path=blocks",
+		"build:assets": "wp-scripts build --config  webpack.assets.config.js",
+		"build": "npm run build:block && npm run build:assets",
+		"format": "wp-scripts format",
+		"lint:css": "wp-scripts lint-style",
+		"lint:js": "wp-scripts lint-js",
+		"packages-update": "wp-scripts packages-update",
+		"plugin-zip": "wp-scripts plugin-zip",
+		"start:block": "wp-scripts start --webpack-copy-php --blocks-manifest --source-path=blocks",
+		"start:assets": "wp-scripts start --config webpack.assets.config.js",
+		"start": "npm run start:block && npm run start:assets"
+	},
+	"devDependencies": {
+		"@wordpress/scripts": "^30.19.0",
+		"css-minimizer-webpack-plugin": "^7.0.2"
+	}
+}

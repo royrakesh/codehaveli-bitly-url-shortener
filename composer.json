@@ -1,0 +1,27 @@
+{
+    "name": "codehaveli/codehaveli-bitly-url-shortener",
+    "description": "Bitly URL Shortener uses the functionality of Bitly API to generate Bitly short link without leaving your WordPress site.",
+    "type": "project",
+    "license": "GPL-2.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "Codehaveli\\Wbitly\\": "includes/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Rakesh Roy",
+            "email": "rakesh.roy@newfold.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.13",
+        "wp-coding-standards/wpcs": "^3.1"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}

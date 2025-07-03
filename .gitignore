@@ -1,0 +1,58 @@
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Node.js dependencies and cache
+node_modules/
+.npm
+.eslintcache
+
+# PHP dependencies
+vendor/
+composer.lock
+
+# WordPress build output
+build/
+*.zip
+
+# wp-scripts plugin output
+*.tgz
+
+# Plugin-specific assets or cache
+assets/*.css
+assets/*.js
+assets/*.map
+
+# Coverage reports
+coverage/
+.clover
+.phpunit.result.cache
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment configuration
+.env
+
+# IDE & editor settings
+.idea/
+.vscode/
+
+# PHPUnit config override
+phpunit.xml
+
+# Temporary files
+*.bak
+*.swp
+*.swo
+
+# Generated translation files
+languages/*.mo
+languages/*.pot
+languages/*.po
+
+# WP Scaffold or

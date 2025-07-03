@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<ruleset name="My Block Plugin Coding Standards">
+    <description>PHPCS for WordPress plugin with includes-only checking and vendor exclusion.</description>
+
+    <!-- Only scan includes/ folder -->
+
+    <file>includes/</file>
+    <!-- <file>includes/WbitlyAjax.php</file>
+    <file>includes/WbitlyIntegrations.php</file>
+    <file>includes/WbitlyAPI.php</file> -->
+      
+
+    <!-- Exclude vendor folder -->
+    <exclude-pattern>vendor/*</exclude-pattern>
+
+    <!-- WordPress Coding Standards -->
+     <rule ref="WordPress" />
+    <!-- <rule ref="WordPress-Core" /> -->
+    <!-- <rule ref="WordPress-Extra" />
+    <rule ref="WordPress-Docs" /> -->
+
+    <!-- Settings -->
+    <arg name="tab-width" value="4"/>
+    <arg name="extensions" value="php"/>
+
+    <!-- Show progress -->
+    <arg value="p"/>
+</ruleset>
