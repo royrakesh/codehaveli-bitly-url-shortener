@@ -41,7 +41,7 @@ class Hooks {
 		}
 
 		// Get the stored short URL safely.
-		$bitly_url = WbitlyManager::getShortUrl( $id );
+		$bitly_url = Manager::get_short_url( $id );
 
 		// Validate URL format before returning.
 		if ( $bitly_url && filter_var( $bitly_url, FILTER_VALIDATE_URL ) ) {
@@ -76,7 +76,7 @@ class Hooks {
 				}
 
 				// Check if short URL already exists.
-				$shorten_url = WbitlyManager::getShortUrl( $post_id );
+				$shorten_url = Manager::get_short_url( $post_id );
 
 				if ( empty( $shorten_url ) && ! wp_is_post_revision( $post_id ) ) {
 					$permalink = get_permalink( $post_id );
@@ -85,11 +85,11 @@ class Hooks {
 					if ( $permalink && filter_var( $permalink, FILTER_VALIDATE_URL ) ) {
 
 						$api       = new BitlyAPI();
-						$short_url = $api->shortenURL( $permalink );
+						$short_url = $api->shorten_url( $permalink );
 
 						// Validate returned short URL before saving.
 						if ( $short_url && filter_var( $short_url, FILTER_VALIDATE_URL ) ) {
-							WbitlyManager::updateShortUrl( $post_id, $short_url );
+							Manager::update_short_url( $post_id, $short_url );
 						} else {
 							// Log or handle invalid short URL.
 							Logger::error( sprintf( 'Invalid Bitly URL for post ID %d: %s', $post_id, $short_url ) );

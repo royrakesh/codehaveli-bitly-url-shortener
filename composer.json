@@ -3,25 +3,39 @@
     "description": "Bitly URL Shortener uses the functionality of Bitly API to generate Bitly short link without leaving your WordPress site.",
     "type": "project",
     "license": "GPL-2.0-or-later",
+    "keywords": ["bitly", "php", "short url", "url shortener", "wordpress plugin"],
     "autoload": {
         "psr-4": {
-            "Codehaveli\\Wbitly\\": "includes/"
+            "Codehaveli\\Wbitly\\": "src/"
         }
     },
     "authors": [
         {
             "name": "Rakesh Roy",
-            "email": "rakesh.roy@newfold.com"
+            "role": "Developer",
+            "email": "royrakesh.cob@gmail.com",
+            "homepage": "https://royrakesh.dev"
         }
     ],
-    "require": {},
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.13",
-        "wp-coding-standards/wpcs": "^3.1"
+        "wp-coding-standards/wpcs": "^3.1",
+        "phpstan/phpstan": "^2.1",
+        "szepeviktor/phpstan-wordpress": "^2.0",
+        "phpstan/extension-installer": "^1.4"
     },
     "config": {
         "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "phpstan/extension-installer": true
         }
+    },
+    "scripts": {
+        "phpstan": "phpstan analyse --memory-limit=2048M",
+        "phpcs": "phpcs",
+        "test" : [
+            "@phpcs",
+            "@phpstan"
+        ]
     }
 }

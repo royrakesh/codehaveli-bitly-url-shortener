@@ -23,7 +23,6 @@ class Assets {
 	 */
 	public static function init() {
 		add_action( 'admin_enqueue_scripts', array( self::class, 'enqueue_admin_assets' ) );
-		add_action( 'wp_footer', array( self::class, 'inject_copy_script' ), PHP_INT_MAX );
 		add_action( 'enqueue_block_editor_assets', array( self::class, 'block_sidebar_assets' ) );
 	}
 
@@ -58,45 +57,6 @@ class Assets {
 		);
 	}
 
-	/**
-	 * Injects a copy-to-clipboard script for Bitly links in the frontend.
-	 *
-	 * @return void
-	 */
-	public static function inject_copy_script() {
-		$default_roles = array( 'administrator' );
-		$allowed_roles = apply_filters( 'wbitly_script_for_allowed_roles', $default_roles );
-
-		foreach ( $allowed_roles as $role ) {
-			if ( ! current_user_can( $role ) ) {
-				continue;
-			}
-
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			echo "<script>
-                (function($) {
-                    $('.wbitly-copy-class').on('click', function(e) {
-                        e.preventDefault();
-                        let link = $(this).find('a').attr('href');
-                        let title = $(this).find('a').attr('title');
-                        if (link) {
-                            let temp = $('<textarea />');
-                            temp.val(link).css({ width: '1px', height: '1px' }).appendTo('body');
-                            temp.select();
-                            if (document.execCommand('copy')) {
-                                temp.remove();
-                                $(this).find('a').html('Copied: ' + $('<div>').text(link).html());
-                                setTimeout(() => {
-                                    $(this).find('a').html($('<div>').text(title).html());
-                                }, 2100);
-                            }
-                        }
-                    });
-                })(jQuery);
-            </script>";
-		}
-	}
-
 
 	/**
 	 * Enqueue block editor sidebar assets and localize data.
@@ -123,8 +83,8 @@ class Assets {
 			'wbitlyData',
 			array(
 				'postId'        => $post_id,
-				'accessToken'   => $token ? $token : '',
-				'groupGuid'     => $group_guid ? $group_guid : '',
+				'accessToken'   => $token ? 1 : '',
+				'groupGuid'     => $group_guid ? 1 : '',
 				'shortUrl'      => get_wbitly_short_url( $post_id ),
 				'socialEnabled' => OptionManager::get( 'wbitly_social_share' ) === 'enable',
 				'settingsLink'  => admin_url( 'tools.php?page=wbitly' ),

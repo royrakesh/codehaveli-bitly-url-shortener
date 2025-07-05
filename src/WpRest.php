@@ -53,6 +53,20 @@ class WpRest {
 				),
 			)
 		);
+
+		register_rest_route('wbitly/v1', '/meta/(?P<id>\d+)', [
+			'methods'  => 'GET',
+			'callback' => function ($request) {
+				$post_id = (int) $request['id'];
+				$short_url = Manager::get_short_url($post_id);
+				return rest_ensure_response([
+					'short_url' => $short_url,
+				]);
+			},
+			'permission_callback' => function () {
+				return current_user_can('edit_posts'); // or refine as needed
+			}
+		]);
 	}
 
 	/**
