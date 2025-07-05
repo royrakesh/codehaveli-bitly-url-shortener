@@ -14,7 +14,7 @@ Text Domain: wbitly
 use Codehaveli\Wbitly\Assets;
 use Codehaveli\Wbitly\Hooks;
 use Codehaveli\Wbitly\Settings;
-use Codehaveli\Wbitly\ThirdPartySupport;
+use Codehaveli\Wbitly\ThirdParty;
 use Codehaveli\Wbitly\WpRest;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -36,7 +36,7 @@ add_action('plugins_loaded', function () {
     WpRest::init();
 	Settings::init();
 	Assets::init();
-	ThirdPartySupport::init();
+	ThirdParty::init();
 	Hooks::init();
 });
 

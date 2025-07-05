@@ -16,19 +16,24 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class OptionManager {
 
+	/**
+	 * Option key for storing plugin settings.
+	 *
+	 * @var string
+	 */
 	private static $option_key = 'wbitly_url_option_name';
 
 	/**
 	 * Get a specific option value.
 	 *
 	 * @param string $key     Option key.
-	 * @param mixed  $default Default value if not set.
+	 * @param mixed  $default_key Default value if not set.
 	 * @return mixed
 	 */
-	public static function get( $key, $default = null ) {
+	public static function get( $key, $default_key = null ) {
 		$options = get_option( self::$option_key, array() );
 		$key     = sanitize_key( $key );
-		return isset( $options[ $key ] ) ? $options[ $key ] : $default;
+		return isset( $options[ $key ] ) ? $options[ $key ] : $default_key;
 	}
 
 	/**

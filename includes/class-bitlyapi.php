@@ -16,9 +16,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class BitlyAPI {
 
-	const API_URL  = 'https://api-ssl.bitly.com/v4';
-	const TIMEOUT  = 5;
-	const LOG_FILE = 'error.log';
+	const API_URL = 'https://api-ssl.bitly.com/v4';
+	const TIMEOUT = 5;
 
 	/**
 	 * Get the group GUID using the access token.
@@ -26,17 +25,17 @@ class BitlyAPI {
 	 * @return string|false Group GUID or false on failure.
 	 */
 	public function get_group_guid() {
-		$accessToken = sanitize_text_field( OptionManager::get( 'access_token' ) );
+		$access_token = sanitize_text_field( OptionManager::get( 'access_token' ) );
 
-		if ( empty( $accessToken ) ) {
+		if ( empty( $access_token ) ) {
 			$this->log_error( 'Access token is missing.' );
 			return false;
 		}
 
-		$response = $this->send_request( '/groups', 'GET', $accessToken );
+		$response = $this->send_request( '/groups', 'GET', $access_token );
 
 		if ( ! $response || ! isset( $response['groups'][0]['guid'] ) ) {
-			$this->log_error( 'Invalid group GUID response: ' . print_r( $response, true ) );
+			$this->log_error( 'Invalid group GUID response: ' . wp_json_encode( $response ) );
 			return false;
 		}
 
@@ -46,38 +45,39 @@ class BitlyAPI {
 	/**
 	 * Shorten a given long URL using Bitly API.
 	 *
-	 * @param string $longUrl The long URL to shorten.
+	 * @param string $long_url The long URL to shorten.
 	 * @return string|false Shortened URL or false on failure.
 	 */
-	public function shorten_url( string $longUrl ) {
-		$longUrl = esc_url_raw( apply_filters( 'wbitly_url_before_process', $longUrl ) );
-		if ( empty( $longUrl ) || ! filter_var( $longUrl, FILTER_VALIDATE_URL ) ) {
+	public function shorten_url( string $long_url ) {
+		$long_url = esc_url_raw( apply_filters( 'wbitly_url_before_process', $long_url ) );
+
+		if ( empty( $long_url ) || ! filter_var( $long_url, FILTER_VALIDATE_URL ) ) {
 			$this->log_error( 'Empty or invalid long URL.' );
 			return false;
 		}
 
-		$accessToken = sanitize_text_field( OptionManager::get( 'access_token' ) );
-		$groupGuid   = sanitize_text_field( OptionManager::get( 'group_guid' ) );
-		$domain      = sanitize_text_field( OptionManager::get( 'bitly_domain', 'bit.ly' ) );
+		$access_token = sanitize_text_field( OptionManager::get( 'access_token' ) );
+		$group_guid   = sanitize_text_field( OptionManager::get( 'group_guid' ) );
+		$domain       = sanitize_text_field( OptionManager::get( 'bitly_domain', 'bit.ly' ) );
 
-		if ( ! $accessToken || ! $groupGuid ) {
+		if ( ! $access_token || ! $group_guid ) {
 			$this->log_error( 'Missing access token or group GUID.' );
 			return false;
 		}
 
 		$payload = array(
-			'group_guid' => $groupGuid,
-			'long_url'   => $longUrl,
+			'group_guid' => $group_guid,
+			'long_url'   => $long_url,
 		);
 
 		if ( ! empty( $domain ) ) {
 			$payload['domain'] = $domain;
 		}
 
-		$response = $this->send_request( '/shorten', 'POST', $accessToken, $payload );
+		$response = $this->send_request( '/shorten', 'POST', $access_token, $payload );
 
 		if ( ! $response || empty( $response['link'] ) ) {
-			$this->log_error( 'Shorten URL failed: ' . print_r( $response, true ) );
+			$this->log_error( 'Shorten URL failed: ' . wp_json_encode( $response ) );
 			return false;
 		}
 
@@ -87,23 +87,23 @@ class BitlyAPI {
 	/**
 	 * Perform a Bitly API request.
 	 *
-	 * @param string     $endpoint    Relative API endpoint (e.g. "/shorten")
-	 * @param string     $method      HTTP method ("GET" or "POST")
-	 * @param string     $accessToken OAuth token
-	 * @param array|null $payload     POST body, optional
-	 * @return array|false            Decoded response array or false on failure.
+	 * @param string     $endpoint     Relative API endpoint (e.g. "/shorten").
+	 * @param string     $method       HTTP method ("GET" or "POST").
+	 * @param string     $access_token OAuth token.
+	 * @param array|null $payload      POST body, optional.
+	 * @return array|false             Decoded response array or false on failure.
 	 */
-	private function send_request( string $endpoint, string $method, string $accessToken, array $payload = null ) {
+	private function send_request( string $endpoint, string $method, string $access_token, array $payload = null ) {
 		$args = array(
 			'method'  => strtoupper( $method ),
 			'headers' => array(
-				'Authorization' => 'Bearer ' . $accessToken,
+				'Authorization' => 'Bearer ' . $access_token,
 				'Content-Type'  => 'application/json',
 			),
 			'timeout' => self::TIMEOUT,
 		);
 
-		if ( $payload && $method === 'POST' ) {
+		if ( $payload && 'POST' === $method ) { // Yoda condition.
 			$args['body'] = wp_json_encode( $payload );
 		}
 
@@ -127,9 +127,6 @@ class BitlyAPI {
 	 * @return void
 	 */
 	private function log_error( string $message ) {
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			$logPath = plugin_dir_path( __FILE__ ) . self::LOG_FILE;
-			error_log( '[WBitly] ' . $message . PHP_EOL, 3, $logPath );
-		}
+		Logger::error( sprintf( $message ) );
 	}
 }

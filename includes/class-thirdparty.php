@@ -14,8 +14,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Handles integration with third-party plugins (e.g., post duplication).
  */
-class ThirdPartySupport {
+class ThirdParty {
 
+	/**
+	 * Singleton instance.
+	 *
+	 * @var ThirdParty
+	 */
 	private static $instance;
 
 	/**

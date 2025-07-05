@@ -19,10 +19,20 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WpRest {
 
+	/**
+	 * Initialize REST API routes.
+	 *
+	 * @return void
+	 */
 	public static function init() {
 		add_action( 'rest_api_init', array( self::class, 'register_routes' ) );
 	}
 
+	/**
+	 * Register REST API routes for Bitly URL Shortener.
+	 *
+	 * @return void
+	 */
 	public static function register_routes() {
 		register_rest_route(
 			'wbitly/v1',
@@ -45,7 +55,14 @@ class WpRest {
 		);
 	}
 
+	/**
+	 * Handle the Bitly URL generation request.
+	 *
+	 * @param WP_REST_Request $request The REST request object.
+	 * @return array|WP_Error
+	 */
 	public static function handle_generate( WP_REST_Request $request ) {
+		// Validate and sanitize post_id.
 		$post_id = intval( $request['post_id'] );
 
 		if ( $post_id <= 0 ) {
@@ -56,6 +73,7 @@ class WpRest {
 			);
 		}
 
+		// Ensure post is published.
 		if ( get_post_status( $post_id ) !== 'publish' ) {
 			return new WP_Error(
 				'wbitly_post_not_published',
@@ -64,6 +82,7 @@ class WpRest {
 			);
 		}
 
+		// Permission check.
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 			return new WP_Error(
 				'rest_forbidden',
@@ -72,8 +91,10 @@ class WpRest {
 			);
 		}
 
+		// Try to get existing short URL.
 		$short_url = Manager::get_short_url( $post_id );
 
+		// If not found, generate and save a new one.
 		if ( ! $short_url ) {
 			$permalink = get_permalink( $post_id );
 			$api       = new BitlyAPI();
@@ -81,10 +102,18 @@ class WpRest {
 			Manager::update_short_url( $post_id, $short_url );
 		}
 
+		// Return the short URL in the response.
 		return rest_ensure_response( array( 'short_url' => esc_url_raw( $short_url ) ) );
 	}
 
+	/**
+	 * Permission check callback for Bitly URL generation.
+	 *
+	 * @param WP_REST_Request $request The REST request object.
+	 * @return bool
+	 */
 	public static function permission_check( WP_REST_Request $request ) {
+		// Validate and check permissions for post_id.
 		$post_id = intval( $request['post_id'] );
 		return $post_id > 0 && current_user_can( 'edit_post', $post_id );
 	}
