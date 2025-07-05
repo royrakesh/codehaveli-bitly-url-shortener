@@ -27,7 +27,7 @@ class OptionManager {
 	 */
 	public static function get( $key, $default = null ) {
 		$options = get_option( self::$option_key, array() );
-		$key = sanitize_key( $key );
+		$key     = sanitize_key( $key );
 		return isset( $options[ $key ] ) ? $options[ $key ] : $default;
 	}
 
@@ -40,7 +40,7 @@ class OptionManager {
 	 */
 	public static function set( $key, $value ) {
 		$options         = get_option( self::$option_key, array() );
-		$key = sanitize_key( $key );
+		$key             = sanitize_key( $key );
 		$options[ $key ] = is_array( $value ) ? array_map( 'sanitize_text_field', $value ) : sanitize_text_field( $value );
 		update_option( self::$option_key, $options );
 	}

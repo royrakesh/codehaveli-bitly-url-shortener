@@ -21,7 +21,7 @@ class Hooks {
 	 *
 	 * @return void
 	 */
-	public static function init(): void {
+	public static function init() {
 		add_filter( 'pre_get_shortlink', array( self::class, 'change_core_short_link_with_wbitly_link' ), 10, 4 );
 		add_action( 'transition_post_status', array( self::class, 'wbitly_update_shorturl' ), 10, 3 );
 	}
@@ -61,7 +61,7 @@ class Hooks {
 	 * @param \WP_Post $post       Post object.
 	 * @return void
 	 */
-	public static function wbitly_update_shorturl( $new_status, $old_status, $post ): void {
+	public static function wbitly_update_shorturl( $new_status, $old_status, $post ) {
 		if ( ! $post instanceof \WP_Post ) {
 			return; // Security: ensure $post is WP_Post object
 		}

@@ -36,11 +36,11 @@ class Settings {
 	 * @return void
 	 */
 	private function hooks() {
-		add_action( 'admin_menu', array( $this, 'registerPage' ) );
-		add_action( 'admin_init', array( $this, 'registerSettings' ) );
-		add_action( 'init', array( $this, 'maybeUpdateGuid' ) );
-		add_action( 'admin_notices', array( $this, 'noticeSuccess' ) );
-		add_action( 'admin_notices', array( $this, 'noticeError' ) );
+		add_action( 'admin_menu', array( $this, 'register_page' ) );
+		add_action( 'admin_init', array( $this, 'register_settings' ) );
+		add_action( 'init', array( $this, 'maybe_update_guid' ) );
+		add_action( 'admin_notices', array( $this, 'notice_success' ) );
+		add_action( 'admin_notices', array( $this, 'notice_error' ) );
 	}
 
 	/**
@@ -48,13 +48,13 @@ class Settings {
 	 *
 	 * @return void
 	 */
-	public function registerPage() {
+	public function register_page() {
 		add_management_page(
 			'Codehaveli Bitly Settings',
 			'Codehaveli Bitly',
 			'manage_options',
 			'wbitly',
-			array( $this, 'renderPage' )
+			array( $this, 'render_page' )
 		);
 	}
 
@@ -63,7 +63,7 @@ class Settings {
 	 *
 	 * @return void
 	 */
-	public function renderPage() {
+	public function render_page() {
 		$options = OptionManager::all();
 		?>
 		<div class="wrap">
@@ -85,7 +85,7 @@ class Settings {
 	 *
 	 * @return void
 	 */
-	public function registerSettings() {
+	public function register_settings() {
 		register_setting(
 			'wbitly_url_option_group',
 			'wbitly_url_option_name',
@@ -99,11 +99,11 @@ class Settings {
 			'wbitly-url-admin'
 		);
 
-		add_settings_field( 'access_token', 'Access Token', array( $this, 'fieldAccessToken' ), 'wbitly-url-admin', 'wbitly_url_setting_section' );
-		add_settings_field( 'group_guid', 'Group GUID', array( $this, 'fieldGroupGuid' ), 'wbitly-url-admin', 'wbitly_url_setting_section' );
-		add_settings_field( 'bitly_domain', 'Domain (Optional)', array( $this, 'fieldBitlyDomain' ), 'wbitly-url-admin', 'wbitly_url_setting_section' );
-		add_settings_field( 'wbitly_social_share', 'Enable Social Share Button', array( $this, 'fieldSocialShare' ), 'wbitly-url-admin', 'wbitly_url_setting_section' );
-		add_settings_field( 'wbitly_custom_post', 'Post Types', array( $this, 'fieldCustomPostTypes' ), 'wbitly-url-admin', 'wbitly_url_setting_section' );
+		add_settings_field( 'access_token', 'Access Token', array( $this, 'field_access_token' ), 'wbitly-url-admin', 'wbitly_url_setting_section' );
+		add_settings_field( 'group_guid', 'Group GUID', array( $this, 'field_group_guid' ), 'wbitly-url-admin', 'wbitly_url_setting_section' );
+		add_settings_field( 'bitly_domain', 'Domain (Optional)', array( $this, 'field_bitly_domain' ), 'wbitly-url-admin', 'wbitly_url_setting_section' );
+		add_settings_field( 'wbitly_social_share', 'Enable Social Share Button', array( $this, 'field_social_share' ), 'wbitly-url-admin', 'wbitly_url_setting_section' );
+		add_settings_field( 'wbitly_custom_post', 'Post Types', array( $this, 'field_custom_post_types' ), 'wbitly-url-admin', 'wbitly_url_setting_section' );
 	}
 
 	/**
@@ -127,7 +127,7 @@ class Settings {
 	 *
 	 * @return void
 	 */
-	public function fieldAccessToken() {
+	public function field_access_token() {
 		printf(
 			'<input class="regular-text" type="text" name="wbitly_url_option_name[access_token]" value="%s" />',
 			esc_attr( OptionManager::get( 'access_token', '' ) )
@@ -140,7 +140,7 @@ class Settings {
 	 *
 	 * @return void
 	 */
-	public function fieldGroupGuid() {
+	public function field_group_guid() {
 		$guid_url = esc_url( admin_url( 'tools.php?page=wbitly&wbitly_guid=update' ) );
 		printf(
 			'<input class="regular-text" type="text" name="wbitly_url_option_name[group_guid]" value="%s" /> <a href="%s" class="button button-primary">%s</a>',
@@ -156,7 +156,7 @@ class Settings {
 	 *
 	 * @return void
 	 */
-	public function fieldBitlyDomain() {
+	public function field_bitly_domain() {
 		printf(
 			'<input class="regular-text" type="text" placeholder="%s" name="wbitly_url_option_name[bitly_domain]" value="%s" />',
 			esc_attr__( 'Default: bit.ly', 'wbitly' ),
@@ -170,7 +170,7 @@ class Settings {
 	 *
 	 * @return void
 	 */
-	public function fieldSocialShare() {
+	public function field_social_share() {
 		$checked = checked( OptionManager::get( 'wbitly_social_share', '' ), 'enable', false );
 		echo '<label><input type="checkbox" name="wbitly_url_option_name[wbitly_social_share]" value="enable" ' . $checked . '> ' . esc_html__( 'Enable', 'wbitly' ) . '</label>';
 		echo '<p><small>' . esc_html__( 'Enable social share button on post edit/list screen.', 'wbitly' ) . '</small></p>';
@@ -181,7 +181,7 @@ class Settings {
 	 *
 	 * @return void
 	 */
-	public function fieldCustomPostTypes() {
+	public function field_custom_post_types() {
 		$selected_types = OptionManager::get( 'wbitly_custom_post', array( 'post' ) );
 		$post_types     = get_post_types( array( 'public' => true ), 'names' );
 
@@ -203,7 +203,7 @@ class Settings {
 	 *
 	 * @return void
 	 */
-	public function maybeUpdateGuid() {
+	public function maybe_update_guid() {
 		if (
 			current_user_can( 'manage_options' ) &&
 			isset( $_GET['page'], $_GET['wbitly_guid'] ) &&
@@ -212,7 +212,7 @@ class Settings {
 		) {
 
 			$api  = new BitlyAPI();
-			$guid = $api->getGroupGuid();
+			$guid = $api->get_group_guid();
 
 			if ( $guid ) {
 				OptionManager::set( 'group_guid', $guid );
@@ -231,7 +231,7 @@ class Settings {
 	 *
 	 * @return void
 	 */
-	public function noticeSuccess() {
+	public function notice_success() {
 		if ( get_transient( 'wbitly_guid_success' ) ) {
 			delete_transient( 'wbitly_guid_success' );
 			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Group GUID saved successfully.', 'wbitly' ) . '</p></div>';
@@ -243,7 +243,7 @@ class Settings {
 	 *
 	 * @return void
 	 */
-	public function noticeError() {
+	public function notice_error() {
 		if ( get_transient( 'wbitly_guid_error' ) ) {
 			delete_transient( 'wbitly_guid_error' );
 			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'Failed to retrieve Group GUID. Check access token.', 'wbitly' ) . '</p></div>';

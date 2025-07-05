@@ -22,9 +22,9 @@ class Assets {
 	 * @return void
 	 */
 	public static function init() {
-		add_action( 'admin_enqueue_scripts', array( self::class, 'enqueueAdminAssets' ) );
-		add_action( 'wp_footer', array( self::class, 'injectCopyScript' ), PHP_INT_MAX );
-		add_action( 'enqueue_block_editor_assets', array( self::class, 'blockSidebarAssets' ) );
+		add_action( 'admin_enqueue_scripts', array( self::class, 'enqueue_admin_assets' ) );
+		add_action( 'wp_footer', array( self::class, 'inject_copy_script' ), PHP_INT_MAX );
+		add_action( 'enqueue_block_editor_assets', array( self::class, 'block_sidebar_assets' ) );
 	}
 
 	/**
@@ -32,7 +32,7 @@ class Assets {
 	 *
 	 * @return void
 	 */
-	public static function enqueueAdminAssets() {
+	public static function enqueue_admin_assets() {
 		wp_enqueue_script(
 			'wbitly-js',
 			WBITLY_PLUGIN_URL . 'build/admin/admin.min.js',
@@ -63,7 +63,7 @@ class Assets {
 	 *
 	 * @return void
 	 */
-	public static function injectCopyScript() {
+	public static function inject_copy_script() {
 		$default_roles = array( 'administrator' );
 		$allowed_roles = apply_filters( 'wbitly_script_for_allowed_roles', $default_roles );
 
@@ -103,7 +103,7 @@ class Assets {
 	 *
 	 * @return void
 	 */
-	public static function blockSidebarAssets() {
+	public static function block_sidebar_assets() {
 		wp_enqueue_script(
 			'wbitly-sidebar',
 			WBITLY_PLUGIN_URL . 'build/admin/sidebar.min.js',

@@ -25,18 +25,18 @@ class BitlyAPI {
 	 *
 	 * @return string|false Group GUID or false on failure.
 	 */
-	public function getGroupGuid() {
+	public function get_group_guid() {
 		$accessToken = sanitize_text_field( OptionManager::get( 'access_token' ) );
 
 		if ( empty( $accessToken ) ) {
-			$this->logError( 'Access token is missing.' );
+			$this->log_error( 'Access token is missing.' );
 			return false;
 		}
 
-		$response = $this->sendRequest( '/groups', 'GET', $accessToken );
+		$response = $this->send_request( '/groups', 'GET', $accessToken );
 
 		if ( ! $response || ! isset( $response['groups'][0]['guid'] ) ) {
-			$this->logError( 'Invalid group GUID response: ' . print_r( $response, true ) );
+			$this->log_error( 'Invalid group GUID response: ' . print_r( $response, true ) );
 			return false;
 		}
 
@@ -49,10 +49,10 @@ class BitlyAPI {
 	 * @param string $longUrl The long URL to shorten.
 	 * @return string|false Shortened URL or false on failure.
 	 */
-	public function shortenURL( string $longUrl ) {
+	public function shorten_url( string $longUrl ) {
 		$longUrl = esc_url_raw( apply_filters( 'wbitly_url_before_process', $longUrl ) );
 		if ( empty( $longUrl ) || ! filter_var( $longUrl, FILTER_VALIDATE_URL ) ) {
-			$this->logError( 'Empty or invalid long URL.' );
+			$this->log_error( 'Empty or invalid long URL.' );
 			return false;
 		}
 
@@ -61,7 +61,7 @@ class BitlyAPI {
 		$domain      = sanitize_text_field( OptionManager::get( 'bitly_domain', 'bit.ly' ) );
 
 		if ( ! $accessToken || ! $groupGuid ) {
-			$this->logError( 'Missing access token or group GUID.' );
+			$this->log_error( 'Missing access token or group GUID.' );
 			return false;
 		}
 
@@ -74,10 +74,10 @@ class BitlyAPI {
 			$payload['domain'] = $domain;
 		}
 
-		$response = $this->sendRequest( '/shorten', 'POST', $accessToken, $payload );
+		$response = $this->send_request( '/shorten', 'POST', $accessToken, $payload );
 
 		if ( ! $response || empty( $response['link'] ) ) {
-			$this->logError( 'Shorten URL failed: ' . print_r( $response, true ) );
+			$this->log_error( 'Shorten URL failed: ' . print_r( $response, true ) );
 			return false;
 		}
 
@@ -93,7 +93,7 @@ class BitlyAPI {
 	 * @param array|null $payload     POST body, optional
 	 * @return array|false            Decoded response array or false on failure.
 	 */
-	private function sendRequest( string $endpoint, string $method, string $accessToken, array $payload = null ) {
+	private function send_request( string $endpoint, string $method, string $accessToken, array $payload = null ) {
 		$args = array(
 			'method'  => strtoupper( $method ),
 			'headers' => array(
@@ -111,7 +111,7 @@ class BitlyAPI {
 		$response = wp_remote_request( $url, $args );
 
 		if ( is_wp_error( $response ) ) {
-			$this->logError( 'API request error: ' . $response->get_error_message() );
+			$this->log_error( 'API request error: ' . $response->get_error_message() );
 			return false;
 		}
 
@@ -126,7 +126,7 @@ class BitlyAPI {
 	 * @param string $message Error message to log.
 	 * @return void
 	 */
-	private function logError( string $message ) {
+	private function log_error( string $message ) {
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 			$logPath = plugin_dir_path( __FILE__ ) . self::LOG_FILE;
 			error_log( '[WBitly] ' . $message . PHP_EOL, 3, $logPath );

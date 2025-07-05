@@ -72,13 +72,13 @@ class WpRest {
 			);
 		}
 
-		$short_url = Manager::getShortUrl( $post_id );
+		$short_url = Manager::get_short_url( $post_id );
 
 		if ( ! $short_url ) {
 			$permalink = get_permalink( $post_id );
 			$api       = new BitlyAPI();
-			$short_url = $api->shortenURL( $permalink );
-			Manager::updateShortUrl( $post_id, $short_url );
+			$short_url = $api->shorten_url( $permalink );
+			Manager::update_short_url( $post_id, $short_url );
 		}
 
 		return rest_ensure_response( array( 'short_url' => esc_url_raw( $short_url ) ) );

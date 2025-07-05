@@ -35,7 +35,7 @@ class ThirdPartySupport {
 	public static function init() {
 		if ( ! self::$instance ) {
 			self::$instance = new self();
-			self::$instance->registerHooks();
+			self::$instance->register_hooks();
 		}
 	}
 
@@ -44,8 +44,8 @@ class ThirdPartySupport {
 	 *
 	 * @return void
 	 */
-	private function registerHooks() {
-		add_filter( 'duplicate_post_excludelist_filter', array( $this, 'excludeMetaOnDuplicate' ), 10, 1 );
+	private function register_hooks() {
+		add_filter( 'duplicate_post_excludelist_filter', array( $this, 'exclude_meta_on_duplicate' ), 10, 1 );
 	}
 
 	/**
@@ -54,7 +54,7 @@ class ThirdPartySupport {
 	 * @param array $meta_blacklist Existing meta blacklist.
 	 * @return array Updated meta blacklist.
 	 */
-	public function excludeMetaOnDuplicate( $meta_blacklist ) {
+	public function exclude_meta_on_duplicate( $meta_blacklist ) {
 		$sanitized = array_map( 'sanitize_key', $this->meta_blacklist );
 		return array_merge( $meta_blacklist, $sanitized );
 	}
@@ -65,9 +65,9 @@ class ThirdPartySupport {
 	 * @param string|array $keys Meta keys to exclude.
 	 * @return void
 	 */
-	public function addMetaToExclude( $keys ) {
-		$keys = (array) $keys;
-		$keys = array_map( 'sanitize_key', $keys );
+	public function add_meta_to_exclude( $keys ) {
+		$keys                 = (array) $keys;
+		$keys                 = array_map( 'sanitize_key', $keys );
 		$this->meta_blacklist = array_unique( array_merge( $this->meta_blacklist, $keys ) );
 	}
 }
