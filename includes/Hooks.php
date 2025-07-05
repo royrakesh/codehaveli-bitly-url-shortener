@@ -6,10 +6,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Prevent direct access
 }
 
+/**
+ * Handles WordPress hooks for Bitly URL Shortener.
+ */
 class Hooks {
 
-
-
+	/**
+	 * Initialize plugin hooks.
+	 *
+	 * @return void
+	 */
 	public static function init(): void {
 		add_filter( 'pre_get_shortlink', array( self::class, 'change_core_short_link_with_wbitly_link' ), 10, 4 );
 		add_action( 'transition_post_status', array( self::class, 'wbitly_update_shorturl' ), 10, 3 );
@@ -19,11 +25,11 @@ class Hooks {
 	/**
 	 * Replace core shortlink with Bitly short URL if available.
 	 *
-	 * @param string|false $shortlink The original shortlink URL.
-	 * @param int          $id Post ID.
-	 * @param string       $context Context for shortlink.
+	 * @param string|false $shortlink   The original shortlink URL.
+	 * @param int          $id          Post ID.
+	 * @param string       $context     Context for shortlink.
 	 * @param bool         $allow_slugs Whether slugs are allowed.
-	 * @return string|false
+	 * @return string|false             Bitly short URL or original shortlink.
 	 */
 	public static function change_core_short_link_with_wbitly_link( $shortlink, $id, $context = '', $allow_slugs = false ) {
 		$id = intval( $id );
@@ -47,7 +53,7 @@ class Hooks {
 	 *
 	 * @param string   $new_status New post status.
 	 * @param string   $old_status Old post status.
-	 * @param \WP_Post $post Post object.
+	 * @param \WP_Post $post       Post object.
 	 * @return void
 	 */
 	public static function wbitly_update_shorturl( $new_status, $old_status, $post ): void {

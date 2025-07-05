@@ -6,6 +6,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Handles Bitly API requests and responses.
+ */
 class BitlyAPI {
 
 	const API_URL  = 'https://api-ssl.bitly.com/v4';
@@ -15,8 +18,7 @@ class BitlyAPI {
 	/**
 	 * Get the group GUID using the access token.
 	 *
-	 * @param string $accessToken
-	 * @return string|false
+	 * @return string|false Group GUID or false on failure.
 	 */
 	public function getGroupGuid() {
 		$accessToken = sanitize_text_field( OptionManager::get( 'access_token' ) );
@@ -39,8 +41,8 @@ class BitlyAPI {
 	/**
 	 * Shorten a given long URL using Bitly API.
 	 *
-	 * @param string $longUrl
-	 * @return string|false
+	 * @param string $longUrl The long URL to shorten.
+	 * @return string|false Shortened URL or false on failure.
 	 */
 	public function shortenURL( string $longUrl ) {
 		$longUrl = esc_url_raw( apply_filters( 'wbitly_url_before_process', $longUrl ) );
@@ -80,11 +82,11 @@ class BitlyAPI {
 	/**
 	 * Perform a Bitly API request.
 	 *
-	 * @param string     $endpoint Relative API endpoint (e.g. "/shorten")
-	 * @param string     $method HTTP method ("GET" or "POST")
+	 * @param string     $endpoint    Relative API endpoint (e.g. "/shorten")
+	 * @param string     $method      HTTP method ("GET" or "POST")
 	 * @param string     $accessToken OAuth token
-	 * @param array|null $payload POST body, optional
-	 * @return array|false
+	 * @param array|null $payload     POST body, optional
+	 * @return array|false            Decoded response array or false on failure.
 	 */
 	private function sendRequest( string $endpoint, string $method, string $accessToken, array $payload = null ) {
 		$args = array(
@@ -116,7 +118,8 @@ class BitlyAPI {
 	/**
 	 * Log errors to file if WP_DEBUG is on.
 	 *
-	 * @param string $message
+	 * @param string $message Error message to log.
+	 * @return void
 	 */
 	private function logError( string $message ) {
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {

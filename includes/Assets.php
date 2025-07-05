@@ -6,14 +6,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Handles plugin assets (JS/CSS) and related scripts.
+ */
 class Assets {
 
+	/**
+	 * Initialize asset hooks.
+	 *
+	 * @return void
+	 */
 	public static function init() {
 		add_action( 'admin_enqueue_scripts', array( self::class, 'enqueueAdminAssets' ) );
 		add_action( 'wp_footer', array( self::class, 'injectCopyScript' ), PHP_INT_MAX );
 		add_action( 'enqueue_block_editor_assets', array( self::class, 'blockSidebarAssets' ) );
 	}
 
+	/**
+	 * Enqueue admin scripts and styles.
+	 *
+	 * @return void
+	 */
 	public static function enqueueAdminAssets() {
 		wp_enqueue_script(
 			'wbitly-js',
@@ -40,6 +53,11 @@ class Assets {
 		);
 	}
 
+	/**
+	 * Injects a copy-to-clipboard script for Bitly links in the frontend.
+	 *
+	 * @return void
+	 */
 	public static function injectCopyScript() {
 		$default_roles = array( 'administrator' );
 		$allowed_roles = apply_filters( 'wbitly_script_for_allowed_roles', $default_roles );
@@ -75,6 +93,11 @@ class Assets {
 	}
 
 
+	/**
+	 * Enqueue block editor sidebar assets and localize data.
+	 *
+	 * @return void
+	 */
 	public static function blockSidebarAssets() {
 		wp_enqueue_script(
 			'wbitly-sidebar',

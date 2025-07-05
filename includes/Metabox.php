@@ -6,13 +6,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Handles Bitly URL metabox and admin bar integration.
+ */
 class Metabox {
 
+	/**
+	 * Initialize metabox and admin bar hooks.
+	 *
+	 * @return void
+	 */
 	public static function init() {
 		add_action( 'add_meta_boxes', array( self::class, 'registerMetabox' ) );
 		add_action( 'admin_bar_menu', array( self::class, 'addFrontendShortlink' ), 999 );
 	}
 
+	/**
+	 * Register Bitly URL metabox for supported post types.
+	 *
+	 * @return void
+	 */
 	public static function registerMetabox() {
 		$capability = apply_filters( 'wbitly_metabox_capability', 'manage_options' );
 		if ( ! current_user_can( $capability ) ) {
@@ -34,6 +47,12 @@ class Metabox {
 		}
 	}
 
+	/**
+	 * Render the Bitly URL metabox content.
+	 *
+	 * @param \WP_Post $post The current post object.
+	 * @return void
+	 */
 	public static function renderMetabox( $post ) {
 		if ( ! $post instanceof \WP_Post ) {
 			return;
@@ -80,6 +99,12 @@ class Metabox {
 		echo '</div>';
 	}
 
+	/**
+	 * Add Bitly shortlink to the frontend admin bar for allowed roles.
+	 *
+	 * @param \WP_Admin_Bar $wp_admin_bar The WP admin bar object.
+	 * @return void
+	 */
 	public static function addFrontendShortlink( $wp_admin_bar ) {
 		$allowed_roles = apply_filters( 'wbitly_script_for_allowed_roles', array( 'administrator' ) );
 

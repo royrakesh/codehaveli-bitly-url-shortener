@@ -6,10 +6,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Handles the plugin settings page and related actions.
+ */
 class SettingsPage {
 
 	private static $instance;
 
+	/**
+	 * Initialize settings page hooks.
+	 *
+	 * @return void
+	 */
 	public static function init() {
 		if ( self::$instance === null ) {
 			self::$instance = new self();
@@ -17,6 +25,11 @@ class SettingsPage {
 		}
 	}
 
+	/**
+	 * Register admin hooks for settings page.
+	 *
+	 * @return void
+	 */
 	private function hooks() {
 		add_action( 'admin_menu', array( $this, 'registerPage' ) );
 		add_action( 'admin_init', array( $this, 'registerSettings' ) );
@@ -25,6 +38,11 @@ class SettingsPage {
 		add_action( 'admin_notices', array( $this, 'noticeError' ) );
 	}
 
+	/**
+	 * Register the settings page in the admin menu.
+	 *
+	 * @return void
+	 */
 	public function registerPage() {
 		add_management_page(
 			'Codehaveli Bitly Settings',
@@ -35,6 +53,11 @@ class SettingsPage {
 		);
 	}
 
+	/**
+	 * Render the settings page HTML.
+	 *
+	 * @return void
+	 */
 	public function renderPage() {
 		$options = OptionManager::all();
 		?>
@@ -52,6 +75,11 @@ class SettingsPage {
 		<?php
 	}
 
+	/**
+	 * Register plugin settings and fields.
+	 *
+	 * @return void
+	 */
 	public function registerSettings() {
 		register_setting(
 			'wbitly_url_option_group',
@@ -73,6 +101,12 @@ class SettingsPage {
 		add_settings_field( 'wbitly_custom_post', 'Post Types', array( $this, 'fieldCustomPostTypes' ), 'wbitly-url-admin', 'wbitly_url_setting_section' );
 	}
 
+	/**
+	 * Sanitize settings input.
+	 *
+	 * @param array $input Raw input array.
+	 * @return array Sanitized input.
+	 */
 	public function sanitize( $input ) {
 		return array(
 			'access_token'        => sanitize_text_field( $input['access_token'] ?? '' ),
@@ -83,6 +117,11 @@ class SettingsPage {
 		);
 	}
 
+	/**
+	 * Render the Access Token field.
+	 *
+	 * @return void
+	 */
 	public function fieldAccessToken() {
 		printf(
 			'<input class="regular-text" type="text" name="wbitly_url_option_name[access_token]" value="%s" />',
@@ -91,6 +130,11 @@ class SettingsPage {
 		echo '<p><a href="https://www.codehaveli.com/how-to-generate-bitly-oauth-access-token/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'How to generate Bitly OAuth access token?', 'wbitly' ) . '</a></p>';
 	}
 
+	/**
+	 * Render the Group GUID field.
+	 *
+	 * @return void
+	 */
 	public function fieldGroupGuid() {
 		$guid_url = esc_url( admin_url( 'tools.php?page=wbitly&wbitly_guid=update' ) );
 		printf(
@@ -102,6 +146,11 @@ class SettingsPage {
 		echo '<p><small>' . esc_html__( 'Save Access Token before getting GUID.', 'wbitly' ) . '</small></p>';
 	}
 
+	/**
+	 * Render the Bitly Domain field.
+	 *
+	 * @return void
+	 */
 	public function fieldBitlyDomain() {
 		printf(
 			'<input class="regular-text" type="text" placeholder="%s" name="wbitly_url_option_name[bitly_domain]" value="%s" />',
@@ -111,12 +160,22 @@ class SettingsPage {
 		echo '<p><small>' . esc_html__( 'Leave blank if you are on a Free Plan.', 'wbitly' ) . '</small></p>';
 	}
 
+	/**
+	 * Render the Social Share field.
+	 *
+	 * @return void
+	 */
 	public function fieldSocialShare() {
 		$checked = checked( OptionManager::get( 'wbitly_social_share', '' ), 'enable', false );
 		echo '<label><input type="checkbox" name="wbitly_url_option_name[wbitly_social_share]" value="enable" ' . $checked . '> ' . esc_html__( 'Enable', 'wbitly' ) . '</label>';
 		echo '<p><small>' . esc_html__( 'Enable social share button on post edit/list screen.', 'wbitly' ) . '</small></p>';
 	}
 
+	/**
+	 * Render the Custom Post Types field.
+	 *
+	 * @return void
+	 */
 	public function fieldCustomPostTypes() {
 		$selected_types = OptionManager::get( 'wbitly_custom_post', array( 'post' ) );
 		$post_types     = get_post_types( array( 'public' => true ), 'names' );
@@ -134,6 +193,11 @@ class SettingsPage {
 		echo '</fieldset>';
 	}
 
+	/**
+	 * Handle GUID update requests from the settings page.
+	 *
+	 * @return void
+	 */
 	public function maybeUpdateGuid() {
 		if (
 			current_user_can( 'manage_options' ) &&
@@ -157,6 +221,11 @@ class SettingsPage {
 		}
 	}
 
+	/**
+	 * Display a success notice if the GUID was updated.
+	 *
+	 * @return void
+	 */
 	public function noticeSuccess() {
 		if ( get_transient( 'wbitly_guid_success' ) ) {
 			delete_transient( 'wbitly_guid_success' );
@@ -164,6 +233,11 @@ class SettingsPage {
 		}
 	}
 
+	/**
+	 * Display an error notice if the GUID update failed.
+	 *
+	 * @return void
+	 */
 	public function noticeError() {
 		if ( get_transient( 'wbitly_guid_error' ) ) {
 			delete_transient( 'wbitly_guid_error' );

@@ -6,17 +6,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Handles integration with third-party plugins (e.g., post duplication).
+ */
 class ThirdPartySupport {
 
 	private static $instance;
 
 	/**
 	 * Meta keys to exclude when duplicating posts.
+	 *
+	 * @var array
 	 */
 	private $meta_blacklist = array(
 		'_wbitly_shorturl',
 	);
 
+	/**
+	 * Initialize third-party support hooks.
+	 *
+	 * @return void
+	 */
 	public static function init() {
 		if ( ! self::$instance ) {
 			self::$instance = new self();
@@ -24,6 +34,11 @@ class ThirdPartySupport {
 		}
 	}
 
+	/**
+	 * Register hooks for third-party plugin compatibility.
+	 *
+	 * @return void
+	 */
 	private function registerHooks() {
 		add_filter( 'duplicate_post_excludelist_filter', array( $this, 'excludeMetaOnDuplicate' ), 10, 1 );
 	}
@@ -31,8 +46,8 @@ class ThirdPartySupport {
 	/**
 	 * Add meta keys to the exclusion list when duplicating posts.
 	 *
-	 * @param array $meta_blacklist
-	 * @return array
+	 * @param array $meta_blacklist Existing meta blacklist.
+	 * @return array Updated meta blacklist.
 	 */
 	public function excludeMetaOnDuplicate( $meta_blacklist ) {
 		$sanitized = array_map( 'sanitize_key', $this->meta_blacklist );
@@ -42,7 +57,7 @@ class ThirdPartySupport {
 	/**
 	 * Allows dynamically adding more meta keys from other plugins or contexts.
 	 *
-	 * @param string|array $keys
+	 * @param string|array $keys Meta keys to exclude.
 	 * @return void
 	 */
 	public function addMetaToExclude( $keys ) {
