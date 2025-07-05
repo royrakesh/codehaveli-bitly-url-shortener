@@ -1,4 +1,9 @@
 <?php
+/**
+ * Assets handler for Codehaveli Bitly URL Shortener plugin.
+ *
+ * @package Codehaveli\Wbitly
+ */
 
 namespace Codehaveli\Wbitly;
 

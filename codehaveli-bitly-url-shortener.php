@@ -13,8 +13,7 @@ Text Domain: wbitly
 
 use Codehaveli\Wbitly\Assets;
 use Codehaveli\Wbitly\Hooks;
-use Codehaveli\Wbitly\Metabox;
-use Codehaveli\Wbitly\SettingsPage;
+use Codehaveli\Wbitly\Settings;
 use Codehaveli\Wbitly\ThirdPartySupport;
 use Codehaveli\Wbitly\WpRest;
 
@@ -35,9 +34,8 @@ define( 'WBITLY_SETTINGS_URL', admin_url( 'tools.php?page=wbitly' ) );
 
 add_action('plugins_loaded', function () {
     WpRest::init();
-	SettingsPage::init();
+	Settings::init();
 	Assets::init();
-	// Metabox::init();
 	ThirdPartySupport::init();
 	Hooks::init();
 });

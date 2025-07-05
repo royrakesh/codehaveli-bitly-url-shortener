@@ -1,4 +1,9 @@
 <?php
+/**
+ * WP REST API handler for Codehaveli Bitly URL Shortener plugin.
+ *
+ * @package Codehaveli\Wbitly
+ */
 
 namespace Codehaveli\Wbitly;
 
@@ -9,6 +14,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Handles REST API endpoints for Bitly URL Shortener.
+ */
 class WpRest {
 
 	public static function init() {
@@ -64,13 +72,13 @@ class WpRest {
 			);
 		}
 
-		$short_url = WbitlyManager::getShortUrl( $post_id );
+		$short_url = Manager::getShortUrl( $post_id );
 
 		if ( ! $short_url ) {
 			$permalink = get_permalink( $post_id );
 			$api       = new BitlyAPI();
 			$short_url = $api->shortenURL( $permalink );
-			WbitlyManager::updateShortUrl( $post_id, $short_url );
+			Manager::updateShortUrl( $post_id, $short_url );
 		}
 
 		return rest_ensure_response( array( 'short_url' => esc_url_raw( $short_url ) ) );

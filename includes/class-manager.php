@@ -1,4 +1,9 @@
 <?php
+/**
+ * Manager for Bitly short URL meta operations.
+ *
+ * @package Codehaveli\Wbitly
+ */
 
 namespace Codehaveli\Wbitly;
 
@@ -6,7 +11,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class WbitlyManager {
+/**
+ * Handles Bitly short URL meta operations for posts.
+ */
+class Manager {
 
 	/**
 	 * Get the Bitly short URL for a post.

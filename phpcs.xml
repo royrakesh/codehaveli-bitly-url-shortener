@@ -4,7 +4,7 @@
 
     <!-- Only scan includes/ folder -->
 
-    <file>includes/</file>
+    <file>includes/class-metabox.php</file>
     <!-- <file>includes/WbitlyAjax.php</file>
     <file>includes/WbitlyIntegrations.php</file>
     <file>includes/WbitlyAPI.php</file> -->

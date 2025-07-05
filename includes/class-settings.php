@@ -1,4 +1,9 @@
 <?php
+/**
+ * Settings page handler for Codehaveli Bitly URL Shortener plugin.
+ *
+ * @package Codehaveli\Wbitly
+ */
 
 namespace Codehaveli\Wbitly;
 
@@ -9,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Handles the plugin settings page and related actions.
  */
-class SettingsPage {
+class Settings {
 
 	private static $instance;
 

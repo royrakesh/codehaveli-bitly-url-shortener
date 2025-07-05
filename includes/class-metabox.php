@@ -1,4 +1,12 @@
 <?php
+/**
+ * Bitly Metabox Integration for WordPress Posts.
+ *
+ * This file contains the `Metabox` class, which handles the Bitly URL metabox
+ * in the WordPress editor, and adds Bitly links to the admin bar on the frontend.
+ *
+ * @package Codehaveli\Wbitly
+ */
 
 namespace Codehaveli\Wbitly;
 
@@ -8,6 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Handles Bitly URL metabox and admin bar integration.
+ *
+ * Hooks into `add_meta_boxes` to register the custom Bitly URL metabox,
+ * and adds Bitly shortlinks to the WordPress frontend admin bar.
  */
 class Metabox {
 
@@ -17,8 +28,8 @@ class Metabox {
 	 * @return void
 	 */
 	public static function init() {
-		add_action( 'add_meta_boxes', array( self::class, 'registerMetabox' ) );
-		add_action( 'admin_bar_menu', array( self::class, 'addFrontendShortlink' ), 999 );
+		add_action( 'add_meta_boxes', array( self::class, 'register_metabox' ) );
+		add_action( 'admin_bar_menu', array( self::class, 'add_frontend_shortlink' ), 999 );
 	}
 
 	/**
@@ -26,20 +37,20 @@ class Metabox {
 	 *
 	 * @return void
 	 */
-	public static function registerMetabox() {
+	public static function register_metabox() {
 		$capability = apply_filters( 'wbitly_metabox_capability', 'manage_options' );
 		if ( ! current_user_can( $capability ) ) {
 			return;
 		}
 
-		$settings          = new SettingsPage();
+		$settings          = new Settings();
 		$active_post_types = OptionManager::get( 'wbitly_custom_post', array( 'post' ) );
 
 		foreach ( $active_post_types as $post_type ) {
 			add_meta_box(
 				'wbitly-bitly-url-metabox',
 				__( 'Bitly Short URL', 'wbitly' ),
-				array( self::class, 'renderMetabox' ),
+				array( self::class, 'render_metabox' ),
 				$post_type,
 				'side',
 				'default'
@@ -53,7 +64,7 @@ class Metabox {
 	 * @param \WP_Post $post The current post object.
 	 * @return void
 	 */
-	public static function renderMetabox( $post ) {
+	public static function render_metabox( $post ) {
 		if ( ! $post instanceof \WP_Post ) {
 			return;
 		}
@@ -105,7 +116,7 @@ class Metabox {
 	 * @param \WP_Admin_Bar $wp_admin_bar The WP admin bar object.
 	 * @return void
 	 */
-	public static function addFrontendShortlink( $wp_admin_bar ) {
+	public static function add_frontend_shortlink( $wp_admin_bar ) {
 		$allowed_roles = apply_filters( 'wbitly_script_for_allowed_roles', array( 'administrator' ) );
 
 		foreach ( $allowed_roles as $role ) {
