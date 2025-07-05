@@ -75,11 +75,24 @@ add_action( 'init', 'create_ch_bitly_block_init' );
 
 if (!function_exists('wbitly_get_template')) {
     function wbitly_get_template($filename, $args = []) {
+        // Only allow .php files from the templates directory
+        $filename = basename($filename);
+        if ( substr($filename, -4) !== '.php' ) {
+            error_log("Invalid template file extension: $filename");
+            return;
+        }
         $filepath = plugin_dir_path(__FILE__) . 'templates/' . $filename;
 
         if (file_exists($filepath)) {
             if (!empty($args) && is_array($args)) {
-                extract($args); // extract array to variables
+                // Prevent variable injection
+                $safe_args = array();
+                foreach ($args as $key => $value) {
+                    if (preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $key)) {
+                        $safe_args[$key] = $value;
+                    }
+                }
+                extract($safe_args, EXTR_SKIP); // safer extract
             }
 
             include $filepath;
@@ -93,18 +106,24 @@ if (!function_exists('wbitly_get_template')) {
 
 
 function get_wbitly_short_url($post_id = null){
-
+	// Validate and sanitize post ID
 	if(!$post_id){
 		global $post;
-		$post_id = isset($post->ID) ? $post->ID : 0;
+		$post_id = isset($post->ID) ? intval($post->ID) : 0;
+	} else {
+		$post_id = intval($post_id);
 	}
 
-    if(!$post_id){
+    if(!$post_id || $post_id <= 0){
         return false;
     }
 
 	$wbitly_url = get_post_meta($post_id, '_wbitly_shorturl', true);
 
-	return $wbitly_url ? $wbitly_url : false;
+	// Validate URL before returning
+	if ( $wbitly_url && filter_var( $wbitly_url, FILTER_VALIDATE_URL ) ) {
+		return esc_url_raw( $wbitly_url );
+	}
 
+	return false;
 }

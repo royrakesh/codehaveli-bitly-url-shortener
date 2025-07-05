@@ -49,6 +49,7 @@ class Assets {
 				continue;
 			}
 
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo "<script>
                 (function($) {
                     $('.wbitly-copy-class').on('click', function(e) {
@@ -61,9 +62,9 @@ class Assets {
                             temp.select();
                             if (document.execCommand('copy')) {
                                 temp.remove();
-                                $(this).find('a').html('Copied: ' + link);
+                                $(this).find('a').html('Copied: ' + $('<div>').text(link).html());
                                 setTimeout(() => {
-                                    $(this).find('a').html(title);
+                                    $(this).find('a').html($('<div>').text(title).html());
                                 }, 2100);
                             }
                         }
@@ -84,7 +85,7 @@ class Assets {
 		);
 
 		global $post;
-		$post_id = $post ? $post->ID : 0;
+		$post_id = ( isset( $post ) && is_object( $post ) && isset( $post->ID ) ) ? intval( $post->ID ) : 0;
 
 		$token      = OptionManager::get( 'access_token' );
 		$group_guid = OptionManager::get( 'group_guid' );
@@ -99,7 +100,7 @@ class Assets {
 				'shortUrl'      => get_wbitly_short_url( $post_id ),
 				'socialEnabled' => OptionManager::get( 'wbitly_social_share' ) === 'enable',
 				'settingsLink'  => admin_url( 'tools.php?page=wbitly' ),
-				'isPublished'   => get_post_status( $post_id ) === 'publish',
+				'isPublished'   => $post_id ? ( get_post_status( $post_id ) === 'publish' ) : false,
 			)
 		);
 	}

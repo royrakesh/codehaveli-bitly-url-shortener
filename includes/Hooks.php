@@ -26,6 +26,7 @@ class Hooks {
 	 * @return string|false
 	 */
 	public static function change_core_short_link_with_wbitly_link( $shortlink, $id, $context = '', $allow_slugs = false ) {
+		$id = intval( $id );
 		if ( ! is_int( $id ) || $id <= 0 ) {
 			return $shortlink; // Invalid post ID, return default
 		}

@@ -39,7 +39,7 @@ class SettingsPage {
 		$options = OptionManager::all();
 		?>
 		<div class="wrap">
-			<h2>Codehaveli Bitly Settings</h2>
+			<h2><?php esc_html_e( 'Codehaveli Bitly Settings', 'wbitly' ); ?></h2>
 			<?php settings_errors(); ?>
 			<form method="post" action="options.php">
 				<?php
@@ -88,31 +88,33 @@ class SettingsPage {
 			'<input class="regular-text" type="text" name="wbitly_url_option_name[access_token]" value="%s" />',
 			esc_attr( OptionManager::get( 'access_token', '' ) )
 		);
-		echo '<p><a href="https://www.codehaveli.com/how-to-generate-bitly-oauth-access-token/" target="_blank">How to generate Bitly OAuth access token?</a></p>';
+		echo '<p><a href="https://www.codehaveli.com/how-to-generate-bitly-oauth-access-token/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'How to generate Bitly OAuth access token?', 'wbitly' ) . '</a></p>';
 	}
 
 	public function fieldGroupGuid() {
 		$guid_url = esc_url( admin_url( 'tools.php?page=wbitly&wbitly_guid=update' ) );
 		printf(
-			'<input class="regular-text" type="text" name="wbitly_url_option_name[group_guid]" value="%s" /> <a href="%s" class="button button-primary">Get GUID</a>',
+			'<input class="regular-text" type="text" name="wbitly_url_option_name[group_guid]" value="%s" /> <a href="%s" class="button button-primary">%s</a>',
 			esc_attr( OptionManager::get( 'group_guid', '' ) ),
-			$guid_url
+			$guid_url,
+			esc_html__( 'Get GUID', 'wbitly' )
 		);
-		echo '<p><small>Save Access Token before getting GUID.</small></p>';
+		echo '<p><small>' . esc_html__( 'Save Access Token before getting GUID.', 'wbitly' ) . '</small></p>';
 	}
 
 	public function fieldBitlyDomain() {
 		printf(
-			'<input class="regular-text" type="text" placeholder="Default: bit.ly" name="wbitly_url_option_name[bitly_domain]" value="%s" />',
+			'<input class="regular-text" type="text" placeholder="%s" name="wbitly_url_option_name[bitly_domain]" value="%s" />',
+			esc_attr__( 'Default: bit.ly', 'wbitly' ),
 			esc_attr( OptionManager::get( 'bitly_domain', '' ) )
 		);
-		echo '<p><small>Leave blank if you are on a Free Plan.</small></p>';
+		echo '<p><small>' . esc_html__( 'Leave blank if you are on a Free Plan.', 'wbitly' ) . '</small></p>';
 	}
 
 	public function fieldSocialShare() {
 		$checked = checked( OptionManager::get( 'wbitly_social_share', '' ), 'enable', false );
-		echo '<label><input type="checkbox" name="wbitly_url_option_name[wbitly_social_share]" value="enable" ' . $checked . '> Enable</label>';
-		echo '<p><small>Enable social share button on post edit/list screen.</small></p>';
+		echo '<label><input type="checkbox" name="wbitly_url_option_name[wbitly_social_share]" value="enable" ' . $checked . '> ' . esc_html__( 'Enable', 'wbitly' ) . '</label>';
+		echo '<p><small>' . esc_html__( 'Enable social share button on post edit/list screen.', 'wbitly' ) . '</small></p>';
 	}
 
 	public function fieldCustomPostTypes() {
@@ -136,8 +138,8 @@ class SettingsPage {
 		if (
 			current_user_can( 'manage_options' ) &&
 			isset( $_GET['page'], $_GET['wbitly_guid'] ) &&
-			$_GET['page'] === 'wbitly' &&
-			$_GET['wbitly_guid'] === 'update'
+			sanitize_text_field( $_GET['page'] ) === 'wbitly' &&
+			sanitize_text_field( $_GET['wbitly_guid'] ) === 'update'
 		) {
 
 			$api  = new BitlyAPI();
@@ -158,14 +160,14 @@ class SettingsPage {
 	public function noticeSuccess() {
 		if ( get_transient( 'wbitly_guid_success' ) ) {
 			delete_transient( 'wbitly_guid_success' );
-			echo '<div class="notice notice-success is-dismissible"><p>Group GUID saved successfully.</p></div>';
+			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Group GUID saved successfully.', 'wbitly' ) . '</p></div>';
 		}
 	}
 
 	public function noticeError() {
 		if ( get_transient( 'wbitly_guid_error' ) ) {
 			delete_transient( 'wbitly_guid_error' );
-			echo '<div class="notice notice-error is-dismissible"><p>Failed to retrieve Group GUID. Check access token.</p></div>';
+			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'Failed to retrieve Group GUID. Check access token.', 'wbitly' ) . '</p></div>';
 		}
 	}
 }

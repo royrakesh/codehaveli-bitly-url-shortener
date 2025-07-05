@@ -28,7 +28,7 @@ class WpRest {
 						'required'          => true,
 						'type'              => 'integer',
 						'validate_callback' => function ( $param ) {
-							return is_numeric( $param );
+							return is_numeric( $param ) && intval( $param ) > 0;
 						},
 						'description'       => __( 'ID of the post to generate Bitly URL for.', 'wbitly' ),
 					),
@@ -38,7 +38,15 @@ class WpRest {
 	}
 
 	public static function handle_generate( WP_REST_Request $request ) {
-		$post_id = (int) $request['post_id'];
+		$post_id = intval( $request['post_id'] );
+
+		if ( $post_id <= 0 ) {
+			return new WP_Error(
+				'wbitly_invalid_post_id',
+				__( 'Invalid post ID.', 'wbitly' ),
+				array( 'status' => 400 )
+			);
+		}
 
 		if ( get_post_status( $post_id ) !== 'publish' ) {
 			return new WP_Error(
@@ -56,7 +64,7 @@ class WpRest {
 			);
 		}
 
-		$short_url = WbitlyManager::getShortUrl( $post_id ); // cached shortlink
+		$short_url = WbitlyManager::getShortUrl( $post_id );
 
 		if ( ! $short_url ) {
 			$permalink = get_permalink( $post_id );
@@ -65,11 +73,11 @@ class WpRest {
 			WbitlyManager::updateShortUrl( $post_id, $short_url );
 		}
 
-		return rest_ensure_response( array( 'short_url' => $short_url ) );
+		return rest_ensure_response( array( 'short_url' => esc_url_raw( $short_url ) ) );
 	}
 
 	public static function permission_check( WP_REST_Request $request ) {
-		$post_id = (int) $request['post_id'];
-		return current_user_can( 'edit_post', $post_id );
+		$post_id = intval( $request['post_id'] );
+		return $post_id > 0 && current_user_can( 'edit_post', $post_id );
 	}
 }

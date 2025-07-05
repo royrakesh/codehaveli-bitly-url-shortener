@@ -23,7 +23,7 @@ class WbitlyManager {
 
 		$short_url = get_post_meta( $post_id, '_wbitly_shorturl', true );
 
-		return $short_url ?: null;
+		return ( $short_url && filter_var( $short_url, FILTER_VALIDATE_URL ) ) ? esc_url_raw( $short_url ) : null;
 	}
 
 	/**
@@ -40,7 +40,8 @@ class WbitlyManager {
 			return false;
 		}
 
-		return update_post_meta( $post_id, '_wbitly_shorturl', sanitize_text_field( $short_url ) );
+		$short_url = filter_var( $short_url, FILTER_VALIDATE_URL ) ? esc_url_raw( $short_url ) : '';
+		return update_post_meta( $post_id, '_wbitly_shorturl', $short_url );
 	}
 
 	/**

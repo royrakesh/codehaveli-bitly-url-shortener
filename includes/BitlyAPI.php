@@ -19,7 +19,7 @@ class BitlyAPI {
 	 * @return string|false
 	 */
 	public function getGroupGuid() {
-		$accessToken = OptionManager::get( 'access_token' );
+		$accessToken = sanitize_text_field( OptionManager::get( 'access_token' ) );
 
 		if ( empty( $accessToken ) ) {
 			$this->logError( 'Access token is missing.' );
@@ -33,7 +33,7 @@ class BitlyAPI {
 			return false;
 		}
 
-		return $response['groups'][0]['guid'];
+		return sanitize_text_field( $response['groups'][0]['guid'] );
 	}
 
 	/**
@@ -44,7 +44,7 @@ class BitlyAPI {
 	 */
 	public function shortenURL( string $longUrl ) {
 		$longUrl = esc_url_raw( apply_filters( 'wbitly_url_before_process', $longUrl ) );
-		if ( empty( $longUrl ) ) {
+		if ( empty( $longUrl ) || ! filter_var( $longUrl, FILTER_VALIDATE_URL ) ) {
 			$this->logError( 'Empty or invalid long URL.' );
 			return false;
 		}

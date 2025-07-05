@@ -35,10 +35,13 @@ class Metabox {
 	}
 
 	public static function renderMetabox( $post ) {
-		$post_id = $post->ID;
+		if ( ! $post instanceof \WP_Post ) {
+			return;
+		}
+		$post_id = intval( $post->ID );
 
 		if ( get_post_status( $post_id ) !== 'publish' ) {
-			echo '<h4>Publish to generate Bitly URL</h4>';
+			echo '<h4>' . esc_html__( 'Publish to generate Bitly URL', 'wbitly' ) . '</h4>';
 			return;
 		}
 
@@ -46,7 +49,7 @@ class Metabox {
 		$guid         = OptionManager::get( 'group_guid' );
 
 		if ( ! $access_token || ! $guid ) {
-			echo '<a class="wbitly_settings" href="' . esc_url( admin_url( 'tools.php?page=wbitly' ) ) . '">Get Started</a>';
+			echo '<a class="wbitly_settings" href="' . esc_url( admin_url( 'tools.php?page=wbitly' ) ) . '">' . esc_html__( 'Get Started', 'wbitly' ) . '</a>';
 			return;
 		}
 
@@ -70,7 +73,7 @@ class Metabox {
 			}
 		} else {
 			echo '<div class="wbitly_tooltip">';
-			echo '<button class="wbitly generate_bitly button button-primary" data-post_id="' . esc_attr( $post_id ) . '">Generate URL</button>';
+			echo '<button class="wbitly generate_bitly button button-primary" data-post_id="' . esc_attr( $post_id ) . '">' . esc_html__( 'Generate URL', 'wbitly' ) . '</button>';
 			echo '</div>';
 		}
 
@@ -90,17 +93,20 @@ class Metabox {
 			foreach ( $active_post_types as $post_type ) {
 				if ( is_singular( $post_type ) ) {
 					global $post;
+					if ( ! $post instanceof \WP_Post ) {
+						continue;
+					}
 					$bitly_url = get_wbitly_short_url( $post->ID );
 
 					if ( $bitly_url ) {
 						$wp_admin_bar->add_node(
 							array(
-								'id'    => 'wbitly_link_' . $post->ID,
-								'title' => __( 'Click to Copy Bitly Link', 'wbitly' ),
-								'href'  => $bitly_url,
+								'id'    => 'wbitly_link_' . intval( $post->ID ),
+								'title' => esc_html__( 'Click to Copy Bitly Link', 'wbitly' ),
+								'href'  => esc_url( $bitly_url ),
 								'meta'  => array(
 									'class' => 'wbitly-copy-class',
-									'title' => __( 'Click to Copy Bitly Link', 'wbitly' ),
+									'title' => esc_attr__( 'Click to Copy Bitly Link', 'wbitly' ),
 								),
 							)
 						);

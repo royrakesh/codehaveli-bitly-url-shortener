@@ -35,7 +35,8 @@ class ThirdPartySupport {
 	 * @return array
 	 */
 	public function excludeMetaOnDuplicate( $meta_blacklist ) {
-		return array_merge( $meta_blacklist, $this->meta_blacklist );
+		$sanitized = array_map( 'sanitize_key', $this->meta_blacklist );
+		return array_merge( $meta_blacklist, $sanitized );
 	}
 
 	/**
@@ -45,7 +46,8 @@ class ThirdPartySupport {
 	 * @return void
 	 */
 	public function addMetaToExclude( $keys ) {
-		$keys                 = (array) $keys;
+		$keys = (array) $keys;
+		$keys = array_map( 'sanitize_key', $keys );
 		$this->meta_blacklist = array_unique( array_merge( $this->meta_blacklist, $keys ) );
 	}
 }
