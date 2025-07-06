@@ -88,14 +88,16 @@ class Settings {
 	public function register_settings() {
 		register_setting(
 			'wbitly_url_option_group',
-			'wbitly_url_option_name',
+			'ch_wbitly_url_option',
 			array( $this, 'sanitize' )
 		);
 
 		add_settings_section(
 			'wbitly_url_setting_section',
 			'Settings',
-			fn() => print( '<p>Configure Bitly API credentials</p>' ),
+			function() {
+				echo '<p>Configure Bitly API credentials</p>';
+			},
 			'wbitly-url-admin'
 		);
 
@@ -129,7 +131,7 @@ class Settings {
 	 */
 	public function field_access_token() {
 		printf(
-			'<input class="regular-text" type="text" name="wbitly_url_option_name[access_token]" value="%s" />',
+			'<input class="regular-text" type="text" name="ch_wbitly_url_option[access_token]" value="%s" />',
 			esc_attr( OptionManager::get( 'access_token', '' ) )
 		);
 		echo '<p><a href="https://www.codehaveli.com/how-to-generate-bitly-oauth-access-token/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'How to generate Bitly OAuth access token?', 'wbitly' ) . '</a></p>';
@@ -143,7 +145,7 @@ class Settings {
 	public function field_group_guid() {
 		$guid_url = esc_url( admin_url( 'tools.php?page=wbitly&wbitly_guid=update' ) );
 		printf(
-			'<input class="regular-text" type="text" name="wbitly_url_option_name[group_guid]" value="%s" /> <a href="%s" class="button button-primary">%s</a>',
+			'<input class="regular-text" type="text" name="ch_wbitly_url_option[group_guid]" value="%s" /> <a href="%s" class="button button-primary">%s</a>',
 			esc_attr( OptionManager::get( 'group_guid', '' ) ),
 			$guid_url,
 			esc_html__( 'Get GUID', 'wbitly' )
@@ -158,7 +160,7 @@ class Settings {
 	 */
 	public function field_bitly_domain() {
 		printf(
-			'<input class="regular-text" type="text" placeholder="%s" name="wbitly_url_option_name[bitly_domain]" value="%s" />',
+			'<input class="regular-text" type="text" placeholder="%s" name="ch_wbitly_url_option[bitly_domain]" value="%s" />',
 			esc_attr__( 'Default: bit.ly', 'wbitly' ),
 			esc_attr( OptionManager::get( 'bitly_domain', '' ) )
 		);
@@ -172,7 +174,7 @@ class Settings {
 	 */
 	public function field_social_share() {
 		$checked = checked( OptionManager::get( 'wbitly_social_share', '' ), 'enable', false );
-		echo '<label><input type="checkbox" name="wbitly_url_option_name[wbitly_social_share]" value="enable" ' . $checked . '> ' . esc_html__( 'Enable', 'wbitly' ) . '</label>';
+		echo '<label><input type="checkbox" name="ch_wbitly_url_option[wbitly_social_share]" value="enable" ' . $checked . '> ' . esc_html__( 'Enable', 'wbitly' ) . '</label>';
 		echo '<p><small>' . esc_html__( 'Enable social share button on post edit/list screen.', 'wbitly' ) . '</small></p>';
 	}
 
@@ -189,7 +191,7 @@ class Settings {
 		foreach ( $post_types as $type ) {
 			$id = 'wbitly_post_' . esc_attr( $type );
 			printf(
-				'<label for="%1$s"><input id="%1$s" type="checkbox" name="wbitly_url_option_name[wbitly_custom_post][]" value="%2$s" %3$s> %2$s</label><br>',
+				'<label for="%1$s"><input id="%1$s" type="checkbox" name="ch_wbitly_url_option[wbitly_custom_post][]" value="%2$s" %3$s> %2$s</label><br>',
 				$id,
 				esc_html( $type ),
 				checked( in_array( $type, $selected_types ), true, false )
