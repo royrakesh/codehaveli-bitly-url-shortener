@@ -7,7 +7,7 @@ parameters:
 
     # Directories or files to analyze.
     paths:
-        - includes/
+        - src/
         - codehaveli-bitly-url-shortener.php
 
     # Analysis level: 10 is the strictest.

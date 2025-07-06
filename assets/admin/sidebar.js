@@ -8,10 +8,10 @@ const WbitlySidebar = () => {
 	const [url, setUrl] = useState(wbitlyData.shortUrl || null);
 	const [loading, setLoading] = useState(false);
 
-	const postType = useSelect((select) => select('core/editor').getCurrentPostType(), []);
-	const postId = useSelect((select) => select('core/editor').getCurrentPostId(), []);
-	const postStatus = useSelect((select) => select('core/editor').getEditedPostAttribute('status'), []);
-	const isSaving = useSelect((select) => select('core/editor').isSavingPost(), []);
+	const postType = useSelect((select) 	=> select('core/editor').getCurrentPostType(), []);
+	const postId = useSelect((select) 		=> select('core/editor').getCurrentPostId(), []);
+	const postStatus = useSelect((select) 	=> select('core/editor').getEditedPostAttribute('status'), []);
+	const isSaving = useSelect((select) 	=> select('core/editor').isSavingPost(), []);
 
 	useEffect(() => {
 		if (!postId || postStatus !== 'publish' || isSaving) return;

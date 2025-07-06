@@ -21,7 +21,38 @@ class OptionManager {
 	 *
 	 * @var string
 	 */
-	private static $option_key = 'wbitly_url_option_name';
+	private static $option_key = 'ch_wbitly_url_option';
+
+	/**
+	 * Old option key for migration.
+	 *
+	 * @var string
+	 */
+	private static $old_option_key = 'wbitly_url_option_name';
+
+	/**
+	 * Run the migration process for updating the option name.
+	 *
+	 * @return void
+	 */
+	public static function migrate_option() {
+		// Check if the old option exists
+		$old_options = get_option( self::$old_option_key, false );
+
+		if ( false !== $old_options ) {
+			// Get the current options
+			$current_options = get_option( self::$option_key, array() );
+
+			// Merge old options with current options
+			$new_options = array_merge( $current_options, $old_options );
+
+			// Update the new option with merged data
+			update_option( self::$option_key, $new_options );
+
+			// Delete the old option
+			delete_option( self::$old_option_key );
+		}
+	}
 
 	/**
 	 * Get a specific option value.
