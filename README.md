@@ -1,32 +1,58 @@
 <p align="center">
-  <img src="plugin-logo.png?raw=true">
+  <img src="plugin-logo.png?raw=true" alt="Bitly URL Shortener Logo">
 </p>
 
-#Bitly URL Shortener
+# Bitly URL Shortener
 
-### Description
+## Description
 
-[Bitly URL Shortener](https://wordpress.org/plugins/codehaveli-bitly-url-shortener/) uses the functionality of Bitly API to generate the short link automatically from your WordPress dashboard.
+**Bitly URL Shortener** is a WordPress plugin that integrates with the Bitly API to automatically generate short links for your posts directly from your WordPress dashboard. Easily connect your Bitly account and manage short URLs without leaving your site.
 
-Bitly URL Shortener allows you to connect your WordPress Website to the Bitly API via access code.
+- Generate Bitly short URLs for posts and custom post types.
+- View and copy short URLs from the post editor, admin bar, or sidebar.
+- Social sharing buttons for Facebook, X (Twitter), and Email.
+- Gutenberg block support for social icons.
+- Secure and privacy-friendly: stores only the minimum required data.
 
-### Terms of Use
+## Installation
 
-This is not a Official plugin of [Bitly](https://bitly.com)
+1. Download and extract the plugin zip or clone this repository into your `wp-content/plugins` directory.
+2. Activate the plugin from the WordPress Plugins menu.
+3. Go to **Tools > Codehaveli Bitly** to configure your Bitly Access Token and Group GUID.
 
-This plugin only connect your [https://bitly.com](https://bitly.com) account to WordPress.
+## Usage
 
-Please read [privacy](https://bitly.com/pages/privacy) and [terms of service](https://bitly.com/pages/terms-of-service) of [Bitly](https://bitly.com) before using this plugin.
+- After activation and setup, publish a post to automatically generate a Bitly short URL.
+- The short URL will appear in the post sidebar, metabox, and admin bar (for allowed roles).
+- Use the "Generate Bitly URL" button if a short URL is not yet created.
+- Enable social sharing buttons from the plugin settings.
 
-### Bug reports
+## Settings
 
-Bug reports for Bitly URL Shortener are welcomed in our Bitly URL Shortener [repository on GitHub](https://github.com/codehaveli/codehaveli-bitly-url-shortener). Please note that GitHub is not a support forum, and that issues that are not properly qualified as bugs will be closed.
+- **Access Token:** Your Bitly OAuth access token. [How to generate?](https://www.codehaveli.com/how-to-generate-bitly-oauth-access-token/)
+- **Group GUID:** Your Bitly group GUID. Click "Get GUID" after saving your access token.
+- **Domain:** (Optional) Custom Bitly domain (leave blank for default `bit.ly`).
+- **Enable Social Share Button:** Show share buttons on post edit/list screens.
+- **Post Types:** Select which post types should have Bitly short URLs.
 
-### Further Reading
+## Developer Notes
 
-For more info on Bitly and Codehaveli , check out the following:
+- REST API endpoints are available for generating and retrieving short URLs.
+- Plugin follows WordPress coding standards and supports PHPStan and PHPCS for code quality.
+- Assets are built using `@wordpress/scripts` and Webpack.
 
-- [Codehaveli](https://www.codehaveli.com/) official homepage.
-- Read "How to generate Bitly OAuth access token" from [Codehaveli Blog](https://bit.ly/2X1Hvjz)
-- Bitly [API Documentation](https://bitly.is/2XxT9BN)
-- Follow Codehaveli on [Facebook](https://www.facebook.com/codehaveli), [Instagram](https://www.instagram.com/codehaveli/) & [Twitter](https://twitter.com/codehaveli).
+## Contributing
+
+Pull requests and bug reports are welcome! Please use [GitHub Issues](https://github.com/codehaveli/codehaveli-bitly-url-shortener/issues) for bug reports.
+
+## License
+
+GPL v2 or later. See [LICENSE](https://www.gnu.org/licenses/gpl-2.0.html).
+
+## Credits
+
+Developed by [Codehaveli](https://www.codehaveli.com/).
+
+---
+
+**Disclaimer:** This plugin is not an official Bitly product. Please review [Bitly's privacy policy](https://bitly.com/pages/privacy) and [terms of service](https://bitly.com/pages/terms-of-service) before use.
