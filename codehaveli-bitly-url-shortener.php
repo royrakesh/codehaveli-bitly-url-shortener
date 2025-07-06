@@ -20,6 +20,7 @@ Tested WP: 6.3
 use Codehaveli\Wbitly\Assets;
 use Codehaveli\Wbitly\Hooks;
 use Codehaveli\Wbitly\Manager;
+use Codehaveli\Wbitly\PostColumn;
 use Codehaveli\Wbitly\Settings;
 use Codehaveli\Wbitly\ThirdParty;
 use Codehaveli\Wbitly\WpRest;
@@ -66,6 +67,7 @@ add_action('plugins_loaded','wbitly_init_plugin_components');
 function wbitly_init_plugin_components()
 {
 	Hooks::init();
+	PostColumn::init();
 	WpRest::init();
 	Settings::init();
 	Assets::init();
