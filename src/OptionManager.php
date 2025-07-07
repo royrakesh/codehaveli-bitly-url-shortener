@@ -89,4 +89,22 @@ class OptionManager {
 	public static function all() {
 		return get_option( self::$option_key, array() );
 	}
+
+	/**
+	 * Get the access token.
+	 *
+	 * @return string
+	 */
+	public static function get_access_token() {
+		return self::get( 'access_token');
+	}
+
+	/**
+	 * Get the GUID.
+	 *
+	 * @return string
+	 */
+	public static function get_guid() {
+		return self::get( 'group_guid');
+	}
 }

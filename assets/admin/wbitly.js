@@ -1,21 +1,6 @@
 (function($, window, undefined) {
 
-	// Reset tooltip text on mouseout
-	$('body').on('mouseout', '.copy_bitly', function () {
-		$(this).find('.wbitly_tooltiptext').text("Click to Copy");
-	});
 
-	// Copy URL to clipboard on click
-	$('body').on('click', '.copy_bitly', function (event) {
-		event.preventDefault();
-
-		const $url = $(this).find('.copy_bitly_link').text().trim();
-		navigator.clipboard.writeText($url).then(() => {
-			$(this).find('.wbitly_tooltiptext').text("Copied: " + $url);
-		}).catch(() => {
-			$(this).find('.wbitly_tooltiptext').text("Failed to Copy");
-		});
-	});
 
 
 	$('body').on('click', '.generate_bitly', function(event) {

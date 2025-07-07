@@ -89,6 +89,8 @@ class Assets {
 				'socialEnabled' => OptionManager::get( 'wbitly_social_share' ) === 'enable',
 				'settingsLink'  => admin_url( 'tools.php?page=wbitly' ),
 				'isPublished'   => $post_id ? ( get_post_status( $post_id ) === 'publish' ) : false,
+				'rest_url'      => esc_url_raw( rest_url() ),
+				'nonce'         => wp_create_nonce( 'wp_rest' ),
 			)
 		);
 	}

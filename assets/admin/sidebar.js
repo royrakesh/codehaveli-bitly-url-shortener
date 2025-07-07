@@ -1,8 +1,7 @@
 const { registerPlugin } = wp.plugins;
-const { PluginDocumentSettingPanel } =
-	wp.editPost?.PluginDocumentSettingPanel
-		? wp.editPost
-		: wp.editor;
+const { PluginDocumentSettingPanel } = wp.editPost?.PluginDocumentSettingPanel
+	? wp.editPost
+	: wp.editor;
 const { Button } = wp.components;
 const { createElement: el, useState, useEffect } = wp.element;
 const { useSelect } = wp.data;
@@ -30,9 +29,15 @@ const WbitlySidebar = () => {
 
 	useEffect(() => {
 		if (!postId || postStatus !== "publish" || isSaving) return;
-
+		const fetchUrl = `/wbitly/v1/meta/${postId}`;
 		setLoading(true);
-		wp.apiFetch({ path: `/wbitly/v1/meta/${postId}` })
+		wp.apiFetch({
+			path: fetchUrl,
+			method: "GET",
+			headers: {
+				"X-WP-Nonce": wbitlyData.nonce,
+			},
+		})
 			.then((res) => {
 				if (res?.short_url) {
 					setUrl(res.short_url);
@@ -51,6 +56,10 @@ const WbitlySidebar = () => {
 		wp.apiFetch({
 			path: `/wbitly/v1/generate/${postId}`,
 			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"X-WP-Nonce": wbitlyData.nonce,
+			},
 		})
 			.then((res) => setUrl(res.short_url))
 			.catch(() => alert("Failed to generate Bitly URL"))

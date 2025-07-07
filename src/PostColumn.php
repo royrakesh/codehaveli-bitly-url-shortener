@@ -44,17 +44,19 @@ class PostColumn
      */
     public static function add_share_column($columns)
     {
-        $new_columns = [];
+        $last_key = array_key_last($columns);
 
-        foreach ($columns as $key => $label) {
-            $new_columns[$key] = $label;
+        // Extract the last column
+        $last_column = [$last_key => $columns[$last_key]];
 
-            if ('title' === $key) {
-                $new_columns['ch_share'] = __('Bitly URL', 'wbitly');
-            }
-        }
+        // Remove the last column temporarily
+        unset($columns[$last_key]);
 
-        return $new_columns;
+        // Insert our custom column
+        $columns['wbitly_url'] = __('Bitly URL', 'wbitly');
+
+        // Re-add the last column
+        return $columns + $last_column;
     }
 
     /**
@@ -65,13 +67,28 @@ class PostColumn
      */
     public static function render_share_column($column, $post_id)
     {
-        if ('ch_share' !== $column) {
+        if ('wbitly_url' !== $column) {
+            return;
+        }
+
+        #if post status is not publish, do not show the share column
+        if ('publish' !== get_post_status($post_id)) {
+            return;
+        }
+
+        #if access token or guid not available then show settings page link
+        if (! OptionManager::get_access_token() || ! OptionManager::get_guid()) {
+            echo '<br><a href="' . esc_url(admin_url('tools.php?page=wbitly')) . '">' . esc_html__('Configure the plugin', 'wbitly') . '</a>';
             return;
         }
 
         $url = Manager::get_short_url($post_id);
         if (! $url) {
-            echo esc_html__('No URL', 'wbitly');
+            if (current_user_can('edit_post', $post_id)) {
+                echo '<button class="button button-secondary wbitly-generate-url" data-post-id="' . esc_attr($post_id) . '">' . esc_html__('Generate Bitly URL', 'wbitly') . '</button>';
+            } else {
+                echo esc_html__('No URL available', 'wbitly');
+            }
             return;
         }
 
@@ -135,6 +152,40 @@ class PostColumn
                             }
                             document.body.removeChild(textarea);
                         }
+                    });
+                });
+
+
+                document.querySelectorAll('.wbitly-generate-url').forEach(function(button) {
+                    button.addEventListener('click', function() {
+                        const postId = this.getAttribute('data-post-id');
+                        const btn = this;
+                        btn.disabled = true;
+                        btn.textContent = 'Generating...';
+
+                        fetch('<?php echo esc_url(rest_url('wbitly/v1/generate/')); ?>' + postId, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-WP-Nonce': '<?php echo wp_create_nonce('wp_rest'); ?>'
+                                },
+                                body: JSON.stringify({})
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                
+                                if (data && data.share_block) {
+                                    btn.parentElement.innerHTML = data.share_block;
+                                } else {
+                                    btn.textContent = 'Failed';
+                                    alert(data.message || 'Error generating URL');
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                btn.textContent = 'Error';
+                                alert('Request failed.');
+                            });
                     });
                 });
             })();
