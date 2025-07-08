@@ -96,7 +96,7 @@ class OptionManager {
 	 * @return string
 	 */
 	public static function get_access_token() {
-		return self::get( 'access_token');
+		return self::get( 'access_token' );
 	}
 
 	/**
@@ -105,6 +105,6 @@ class OptionManager {
 	 * @return string
 	 */
 	public static function get_guid() {
-		return self::get( 'group_guid');
+		return self::get( 'group_guid' );
 	}
 }

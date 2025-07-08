@@ -95,7 +95,7 @@ class Settings {
 		add_settings_section(
 			'wbitly_url_setting_section',
 			'Settings',
-			function() {
+			function () {
 				echo '<p>Configure Bitly API credentials</p>';
 			},
 			'wbitly-url-admin'

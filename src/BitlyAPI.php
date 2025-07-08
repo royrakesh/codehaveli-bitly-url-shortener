@@ -84,6 +84,27 @@ class BitlyAPI {
 		return esc_url_raw( $response['link'] );
 	}
 
+
+	public function get_rate_limit() {
+		$access_token = sanitize_text_field( OptionManager::get_access_token() );
+		if ( empty( $access_token ) ) {
+			$this->log_error( 'Access token is missing.' );
+			return false;
+		}
+
+		$endpoint = '/user/platform_limits';
+
+		$response = $this->send_request( $endpoint, 'GET', $access_token );
+
+		if ( ! $response || ! isset( $response['platform_limits'] ) ) {
+			$this->log_error( 'Invalid rate limit response: ' . wp_json_encode( $response ) );
+			return false;
+		}
+		$platform_limits = $response['platform_limits'];
+
+		return $platform_limits;
+	}
+
 	/**
 	 * Perform a Bitly API request.
 	 *

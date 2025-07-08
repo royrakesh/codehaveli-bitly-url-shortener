@@ -4,7 +4,7 @@
 Plugin Name: Bitly URL Shortener
 Plugin URI: https://github.com/codehaveli/
 Description: Bitly URL Shortener uses the functionality of Bitly API to generate Bitly short links without leaving your WordPress site.
-Version: 1.5.1
+Version: 1.5.0
 Author: Codehaveli
 Author URI: https://www.codehaveli.com/
 License: GPLv2 or later
@@ -25,34 +25,35 @@ use Codehaveli\Wbitly\Settings;
 use Codehaveli\Wbitly\ThirdParty;
 use Codehaveli\Wbitly\WpRest;
 
-if (! defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
 require_once 'vendor/autoload.php';
 
-$plugin_data = get_file_data(
+$plugin_data    = get_file_data(
 	__FILE__,
 	array(
 		'Version' => 'Version',
 	)
 );
-$plugin_version = time(); //$plugin_data['Version'];
+$plugin_version = $plugin_data['Version'];
 
-if (! defined('WBITLY_PLUGIN_VERSION')) {
-	define('WBITLY_PLUGIN_VERSION',  $plugin_version);
+if ( ! defined( 'WBITLY_PLUGIN_VERSION' ) ) {
+	define( 'WBITLY_PLUGIN_VERSION', $plugin_version );
 }
-define('WBITLY_PLUGIN_PATH', plugin_dir_path(__FILE__));
-define('WBITLY_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('WBITLY_API_URL', 'https://api-ssl.bitly.com');
-define('WBITLY_BASENAME', plugin_basename(__FILE__));
-define('WBITLY_SETTINGS_URL', admin_url('tools.php?page=wbitly'));
+define( 'WBITLY_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+define( 'WBITLY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'WBITLY_API_URL', 'https://api-ssl.bitly.com' );
+define( 'WBITLY_BASENAME', plugin_basename( __FILE__ ) );
+define( 'WBITLY_SETTINGS_URL', admin_url( 'tools.php?page=wbitly' ) );
 
+/**
+ * Migrate options from the old plugin settings.
+ */
+register_activation_hook( __FILE__, 'wbitly_activate' );
 
-register_activation_hook(__FILE__, 'migrate_wbitly_options');
-
-function migrate_wbitly_options()
-{
+function wbitly_activate() {
 	\Codehaveli\Wbitly\OptionManager::migrate_option();
 }
 
@@ -62,56 +63,20 @@ function migrate_wbitly_options()
  *
  * This function is called when the plugins_loaded action is triggered.
  */
-add_action('plugins_loaded','wbitly_init_plugin_components');
+add_action( 'plugins_loaded', 'wbitly_init_plugin_components' );
 
-function wbitly_init_plugin_components()
-{
+function wbitly_init_plugin_components() {
 	Hooks::init();
 	PostColumn::init();
 	WpRest::init();
 	Settings::init();
 	Assets::init();
 	ThirdParty::init();
-
 }
 
 
 
-/**
- * Get a template file from the plugin's templates directory.
- *
- * @param string $filename The name of the template file.
- * @param array  $args     Optional. Arguments to pass to the template.
- */
-if (! function_exists('wbitly_get_template')) {
-	function wbitly_get_template($filename, $args = array())
-	{
-		// Only allow .php files from the templates directory.
-		$filename = basename($filename);
-		if (substr($filename, -4) !== '.php') {
-			error_log("Invalid template file extension: $filename");
-			return;
-		}
-		$filepath = plugin_dir_path(__FILE__) . 'templates/' . $filename;
 
-		if (file_exists($filepath)) {
-			if (! empty($args) && is_array($args)) {
-				// Prevent variable injection.
-				$safe_args = array();
-				foreach ($args as $key => $value) {
-					if (preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $key)) {
-						$safe_args[$key] = $value;
-					}
-				}
-				extract($safe_args, EXTR_SKIP); // safer extract.
-			}
-
-			include $filepath;
-		} else {
-			error_log("Template file not found: $filepath");
-		}
-	}
-}
 
 
 
@@ -121,26 +86,39 @@ if (! function_exists('wbitly_get_template')) {
  * @param int|null $post_id The post ID.
  * @return string|false The Bitly short URL or false if not found.
  */
-function get_wbitly_short_url($post_id = null)
-{
+function get_wbitly_short_url( $post_id = null ) {
 	// Validate and sanitize post ID.
-	if (! $post_id) {
+	if ( ! $post_id ) {
 		global $post;
-		$post_id = isset($post->ID) ? intval($post->ID) : 0;
+		$post_id = isset( $post->ID ) ? intval( $post->ID ) : 0;
 	} else {
-		$post_id = intval($post_id);
+		$post_id = intval( $post_id );
 	}
 
-	if (! $post_id || $post_id <= 0) {
+	if ( ! $post_id || $post_id <= 0 ) {
 		return false;
 	}
 
-	$wbitly_url =  Manager::get_short_url($post_id);
+	$wbitly_url = Manager::get_short_url( $post_id );
 
 	// Validate URL before returning.
-	if ($wbitly_url && filter_var($wbitly_url, FILTER_VALIDATE_URL)) {
-		return esc_url_raw($wbitly_url);
+	if ( $wbitly_url && filter_var( $wbitly_url, FILTER_VALIDATE_URL ) ) {
+		return esc_url_raw( $wbitly_url );
 	}
 
 	return false;
+}
+
+/**
+ * Get the Bitly short URL for a specific post.
+ * This function is used in WP-CLI commands.
+ *
+ * @param int|null $post_id The post ID.
+ * @return string|false The Bitly short URL or false if not found.
+ */
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	// Optional: ensure the class exists before instantiating
+	if ( class_exists( '\Codehaveli\Wbitly\WbitlyCLI' ) ) {
+		WP_CLI::add_command( 'wbitly', '\Codehaveli\Wbitly\WbitlyCLI' );
+	}
 }
