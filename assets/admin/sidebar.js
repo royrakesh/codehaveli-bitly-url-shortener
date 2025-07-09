@@ -28,6 +28,7 @@ const WbitlySidebar = () => {
 	);
 
 	useEffect(() => {
+		if (postType !== "post") return;
 		if (!postId || postStatus !== "publish" || isSaving) return;
 		const fetchUrl = `/wbitly/v1/meta/${postId}`;
 		setLoading(true);
@@ -47,7 +48,7 @@ const WbitlySidebar = () => {
 			})
 			.catch(() => alert("Failed to fetch Bitly short URL"))
 			.finally(() => setLoading(false));
-	}, [postId, postStatus, isSaving]);
+	}, [postId, postStatus, isSaving, postType]);
 
 	if (postType !== "post") return null;
 

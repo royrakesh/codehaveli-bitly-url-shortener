@@ -1,0 +1,38 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "codehaveli/wbitly-share-icons",
+	"version": "0.1.0",
+	"title": "Bitly Share Icons",
+	"category": "widgets",
+	"icon": "smiley",
+	"description": "Block for displaying Bitly share icons.",
+	"example": {},
+	"supports": {
+		"html": false
+	},
+	"textdomain": "wbitly",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php",
+	"viewScript": "file:./view.js",
+	"attributes": {
+		"showIcons": {
+			"type": "array",
+			"default": ["facebook", "linkedin", "x", "telegram", "whatsapp"]
+		},
+		"iconSize": {
+			"type": "string",
+			"default": "50"
+		},
+		"customSize": {
+			"type": "number",
+			"default": 24
+		},
+		"fillColor": {
+      		"type": "string",
+      		"default": null
+    	}
+	}
+}
