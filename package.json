@@ -21,5 +21,6 @@
 	"devDependencies": {
 		"@wordpress/scripts": "^30.19.0",
 		"css-minimizer-webpack-plugin": "^7.0.2"
-	}
+	},
+	"files": [ "lib", "src", "build", "templates", "languages", "codehaveli-bitly-url-shortener.php", "readme.txt" ]
 }

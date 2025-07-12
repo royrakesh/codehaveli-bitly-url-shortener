@@ -126,7 +126,7 @@ class WpRest {
 
 		$esc_url       = esc_url( $short_url );
 		$encoded_url   = rawurlencode( $short_url );
-		$email_subject = rawurlencode( get_the_title( $post_id ) );
+		$title         = rawurlencode( get_the_title( $post_id ) );
 
 		// Load the share.php template and capture output.
 		ob_start();
@@ -135,6 +135,7 @@ class WpRest {
 			array(
 				'esc_url'     => $esc_url,
 				'encoded_url' => $encoded_url,
+				'title'		  => $title
 			)
 		);
 		$share_html = ob_get_clean();
@@ -185,7 +186,7 @@ class WpRest {
 			error_log( "Invalid template file extension: $filename" );
 			return;
 		}
-		$filepath = plugin_dir_path( __FILE__ ) . 'templates/' . $filename;
+		$filepath = WBITLY_PLUGIN_PATH . 'templates/' . $filename;
 
 		if ( file_exists( $filepath ) ) {
 			if ( ! empty( $args ) && is_array( $args ) ) {
@@ -201,7 +202,7 @@ class WpRest {
 
 			include $filepath;
 		} else {
-			error_log( "Template file not found: $filepath" );
+			Logger::error( sprintf( __( 'Template file not found: %s', 'wbitly' ), $filepath ) );
 		}
 	}
 

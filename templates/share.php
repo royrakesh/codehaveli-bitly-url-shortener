@@ -1,7 +1,7 @@
 <?php
 /** @var string $esc_url */
 /** @var string $encoded_url */
-/** @var string $email_subject */
+/** @var string $title */
 ?>
 <div class="wbitly-url-share">
 	<p>
@@ -15,7 +15,7 @@
 			class="wbitly-icon wbitly-icon-facebook"
 			title="<?php esc_attr_e( 'Share on Facebook', 'wbitly' ); ?>"></a>
 
-		<a href="mailto:?subject=<?php echo $email_subject; ?>&body=<?php echo $encoded_url; ?>"
+		<a href="mailto:?subject=<?php echo $title; ?>&body=<?php echo $encoded_url; ?>"
 			class="wbitly-icon wbitly-icon-email"
 			title="<?php esc_attr_e( 'Share via Email', 'wbitly' ); ?>"></a>
 

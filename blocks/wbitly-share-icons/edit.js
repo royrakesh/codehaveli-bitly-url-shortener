@@ -228,7 +228,8 @@ export default function Edit({ attributes, setAttributes }) {
 			<div {...useBlockProps()}>
 				{showIcons.map((icon) => (
 					<div key={icon} className={`icon icon-${icon}`}>
-						{renderIcon(icon, iconSize, fillColor || fillColors[icon])}
+						let finalSize = iconSize === "custom" ? attributes.customSize : iconSize;
+						{renderIcon(icon, finalSize, fillColor || fillColors[icon])}
 					</div>
 				))}
 			</div>

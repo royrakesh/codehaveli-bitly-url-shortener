@@ -28,7 +28,8 @@
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "phpstan/extension-installer": true
-        }
+        },
+        "vendor-dir": "lib"
     },
     "scripts": {
         "phpstan": "phpstan analyse --memory-limit=2048M",
