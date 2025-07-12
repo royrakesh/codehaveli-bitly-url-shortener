@@ -124,9 +124,9 @@ class WpRest {
 			Manager::update_short_url( $post_id, $short_url );
 		}
 
-		$esc_url       = esc_url( $short_url );
-		$encoded_url   = rawurlencode( $short_url );
-		$title         = rawurlencode( get_the_title( $post_id ) );
+		$esc_url     = esc_url( $short_url );
+		$encoded_url = rawurlencode( $short_url );
+		$title       = rawurlencode( get_the_title( $post_id ) );
 
 		// Load the share.php template and capture output.
 		ob_start();
@@ -135,7 +135,7 @@ class WpRest {
 			array(
 				'esc_url'     => $esc_url,
 				'encoded_url' => $encoded_url,
-				'title'		  => $title
+				'title'       => $title,
 			)
 		);
 		$share_html = ob_get_clean();
@@ -178,7 +178,6 @@ class WpRest {
 	 * @param string $filename The name of the template file.
 	 * @param array  $args     Optional. Arguments to pass to the template.
 	 */
-
 	public static function wbitly_get_template( $filename, $args = array() ) {
 		// Only allow .php files from the templates directory.
 		$filename = basename( $filename );
@@ -205,5 +204,4 @@ class WpRest {
 			Logger::error( sprintf( __( 'Template file not found: %s', 'wbitly' ), $filepath ) );
 		}
 	}
-
 }

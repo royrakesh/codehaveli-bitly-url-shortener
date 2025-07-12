@@ -41,7 +41,7 @@ class PostColumn {
 	 * @return array Modified columns.
 	 */
 	public static function add_share_column( $columns ) {
-		$last_key = array_key_last( $columns );
+		$last_key = key( array_slice( $columns, -1, 1, true ) );
 
 		// Extract the last column
 		$last_column = array( $last_key => $columns[ $last_key ] );

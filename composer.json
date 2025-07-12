@@ -22,21 +22,29 @@
         "wp-coding-standards/wpcs": "^3.1",
         "phpstan/phpstan": "^2.1",
         "szepeviktor/phpstan-wordpress": "^2.0",
-        "phpstan/extension-installer": "^1.4"
+        "phpstan/extension-installer": "^1.4",
+        "phpcompatibility/php-compatibility": "^9.3",
+        "slevomat/coding-standard": "^8.19"
     },
     "config": {
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "phpstan/extension-installer": true
-        },
-        "vendor-dir": "lib"
+        }
     },
     "scripts": {
-        "phpstan": "phpstan analyse --memory-limit=2048M",
+        "phpcompat:check": [
+            "@php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 7.2-7.2 ./src",
+            "@php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 7.4-7.4 ./src",
+            "@php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.1-8.1 ./src",
+            "@php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.2-8.2 ./src",
+            "@php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.3-8.3 ./src",
+            "@php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.4-8.4 ./src"
+        ],
         "phpcs": "phpcs",
         "test" : [
-            "@phpcs",
-            "@phpstan"
+            "@phpcompat:check",
+            "@phpcs"
         ]
     }
 }
