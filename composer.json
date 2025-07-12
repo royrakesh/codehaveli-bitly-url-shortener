@@ -9,6 +9,11 @@
             "Codehaveli\\Wbitly\\": "src/"
         }
     },
+    "autoload-dev": {
+  "psr-4": {
+    "Codehaveli\\Wbitly\\": "tests/"
+  }
+},
     "authors": [
         {
             "name": "Rakesh Roy",
@@ -24,7 +29,9 @@
         "szepeviktor/phpstan-wordpress": "^2.0",
         "phpstan/extension-installer": "^1.4",
         "phpcompatibility/php-compatibility": "^9.3",
-        "slevomat/coding-standard": "^8.19"
+        "slevomat/coding-standard": "^8.19",
+        "phpunit/phpunit": "^12.2",
+        "brain/monkey": "^2.6"
     },
     "config": {
         "allow-plugins": {
@@ -33,6 +40,7 @@
         }
     },
     "scripts": {
+        "test": "phpunit",
         "phpcompat:check": [
             "@php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 7.2-7.2 ./src",
             "@php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 7.4-7.4 ./src",
@@ -42,7 +50,7 @@
             "@php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.4-8.4 ./src"
         ],
         "phpcs": "phpcs",
-        "test" : [
+        "boom" : [
             "@phpcompat:check",
             "@phpcs"
         ]

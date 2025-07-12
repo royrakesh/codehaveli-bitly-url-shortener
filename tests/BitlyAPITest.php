@@ -1,4 +1,5 @@
 <?php
+namespace Codehaveli\Wbitly;
 
 use PHPUnit\Framework\TestCase;
 use Codehaveli\Wbitly\BitlyAPI;
