@@ -5,9 +5,10 @@ const { PluginDocumentSettingPanel } = wp.editPost?.PluginDocumentSettingPanel
 const { Button } = wp.components;
 const { createElement: el, useState, useEffect } = wp.element;
 const { useSelect } = wp.data;
+const { __ } = wp.i18n;
 
 const WbitlySidebar = () => {
-	const [url, setUrl] = useState(wbitlyData.shortUrl || null);
+	const [url, setUrl] = useState(wbitlyPostData.shortUrl || null);
 	const [loading, setLoading] = useState(false);
 
 	const postType = useSelect(
@@ -36,7 +37,7 @@ const WbitlySidebar = () => {
 			path: fetchUrl,
 			method: "GET",
 			headers: {
-				"X-WP-Nonce": wbitlyData.nonce,
+				"X-WP-Nonce": wbitlyPostData.nonce,
 			},
 		})
 			.then((res) => {
@@ -46,7 +47,7 @@ const WbitlySidebar = () => {
 					setUrl(null);
 				}
 			})
-			.catch(() => alert("Failed to fetch Bitly short URL"))
+			.catch(() => alert(__('Failed to fetch Bitly short URL', 'wbitly')))
 			.finally(() => setLoading(false));
 	}, [postId, postStatus, isSaving, postType]);
 
@@ -59,29 +60,29 @@ const WbitlySidebar = () => {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				"X-WP-Nonce": wbitlyData.nonce,
+				"X-WP-Nonce": wbitlyPostData.nonce,
 			},
 		})
 			.then((res) => setUrl(res.short_url))
-			.catch(() => alert("Failed to generate Bitly URL"))
+			.catch(() => alert(__('Failed to generate Bitly URL', 'wbitly')))
 			.finally(() => setLoading(false));
 	};
 
 	const renderContent = () => {
-		if (!wbitlyData.accessToken || !wbitlyData.groupGuid) {
+		if (!wbitlyPostData.accessToken || !wbitlyPostData.groupGuid) {
 			return el(
 				"p",
 				null,
 				el(
 					"a",
-					{ href: wbitlyData.settingsLink },
-					"Setup Bitly API in Wbitly settings",
+					{ href: wbitlyPostData.settingsLink },
+					__('Setup Bitly API in Wbitly settings', 'wbitly'),
 				),
 			);
 		}
 
 		if (postStatus !== "publish") {
-			return el("p", null, "Publish to generate Bitly URL");
+			return el("p", null, __('Publish to generate Bitly URL', 'wbitly'));
 		}
 
 		if (url) {
@@ -105,15 +106,15 @@ const WbitlySidebar = () => {
 						target: "_blank",
 						rel: "noopener noreferrer",
 						className: "wbitly-icon wbitly-icon-facebook",
-						title: "Share on Facebook",
+						title: __('Share on Facebook', 'wbitly'),
 					}),
 
 					el("a", {
-						href: `mailto:?subject=Check%20this%20out&body=${encodeURIComponent(
+						href: `mailto:?subject=${encodeURIComponent(__('Check this out', 'wbitly'))}&body=${encodeURIComponent(
 							url,
 						)}`,
 						className: "wbitly-icon wbitly-icon-email",
-						title: "Share via Email",
+						title: __('Share via Email', 'wbitly'),
 					}),
 
 					el("a", {
@@ -123,7 +124,7 @@ const WbitlySidebar = () => {
 						target: "_blank",
 						rel: "noopener noreferrer",
 						className: "wbitly-icon wbitly-icon-x",
-						title: "Share on X (Twitter)",
+						title: __('Share on X (Twitter)', 'wbitly'),
 					}),
 
 					el(
@@ -136,28 +137,29 @@ const WbitlySidebar = () => {
 								) {
 									navigator.clipboard
 										.writeText(url)
-										.then(() => alert("URL copied to clipboard!"))
+										.then(() =>
+											alert(__('URL copied to clipboard!', 'wbitly')),
+										)
 										.catch((err) => {
 											console.error("Clipboard copy failed", err);
-											alert("Copy failed. Try manually.");
+											alert(__('Copy failed. Try manually.', 'wbitly'));
 										});
 								} else {
-									// Fallback for older/HTTP environments
 									const textarea = document.createElement("textarea");
 									textarea.value = url;
 									document.body.appendChild(textarea);
 									textarea.select();
 									try {
 										document.execCommand("copy");
-										alert("URL copied to clipboard!");
+										alert(__('URL copied to clipboard!', 'wbitly'));
 									} catch (err) {
-										alert("Copy not supported");
+										alert(__('Copy not supported', 'wbitly'));
 									}
 									document.body.removeChild(textarea);
 								}
 							},
 							className: "wbitly-icon wbitly-icon-copy",
-							title: "Copy URL",
+							title: __('Copy URL', 'wbitly'),
 							style: {
 								background: "none",
 								border: "none",
@@ -179,7 +181,7 @@ const WbitlySidebar = () => {
 				disabled: loading,
 				onClick: handleGenerate,
 			},
-			"Generate Bitly URL",
+			__('Generate Bitly URL', 'wbitly'),
 		);
 	};
 
@@ -187,7 +189,7 @@ const WbitlySidebar = () => {
 		PluginDocumentSettingPanel,
 		{
 			name: "wbitly-sidebar",
-			title: "Bitly Short URL",
+			title: __('Bitly Short URL', 'wbitly'),
 			icon: "admin-links",
 			className: "wbitly-sidebar",
 		},

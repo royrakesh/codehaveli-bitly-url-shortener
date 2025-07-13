@@ -15,16 +15,20 @@
  * Tested WP: 6.3
  */
 
-use Codehaveli\Wbitly\{
-	Assets,
-	Hooks,
-	Manager,
-	OptionManager,
-	PostColumn,
-	Settings,
-	ThirdParty,
-	WpRest
-};
+// Admin components
+use Codehaveli\Wbitly\Admin\Assets;
+use Codehaveli\Wbitly\Admin\Hooks;
+use Codehaveli\Wbitly\Admin\Manager;
+use Codehaveli\Wbitly\Admin\OptionManager;
+use Codehaveli\Wbitly\Admin\PostColumn;
+use Codehaveli\Wbitly\Admin\Settings;
+
+// API & Support
+use Codehaveli\Wbitly\API\WpRest;
+use Codehaveli\Wbitly\Support\ThirdParty;
+
+// Utilities
+use Codehaveli\Wbitly\Util\Logger;
 
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
@@ -54,7 +58,7 @@ function wbitly_check_requirements() {
 		);
 	}
 
-	if ( ! file_exists( __DIR__ . '/lib/autoload.php' ) ) {
+	if ( ! file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 		$errors[] = __( 'Bitly URL Shortener plugin requires the Composer autoloader. Please run `composer install` in the plugin directory.', 'wbitly' );
 	}
 
@@ -73,7 +77,7 @@ function wbitly_check_requirements() {
 	}
 
 	// Load the plugin if all requirements are met
-	require_once __DIR__ . '/lib/autoload.php';
+	require_once __DIR__ . '/vendor/autoload.php';
 	wbitly_init_plugin();
 }
 
@@ -142,7 +146,7 @@ function get_wbitly_short_url( $post_id = null ) {
 		$url = Manager::get_short_url( $post_id );
 		return $url && filter_var( $url, FILTER_VALIDATE_URL ) ? esc_url_raw( $url ) : false;
 	} catch ( Exception $e ) {
-		Codehaveli\Wbitly\Logger::error( sprintf( 'Bitly URL Shortener Error: %s', $e->getMessage() ) );
+		Logger::error( sprintf( 'Bitly URL Shortener Error: %s', $e->getMessage() ) );
 		return false;
 	}
 }

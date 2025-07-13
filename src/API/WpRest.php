@@ -6,8 +6,10 @@
  * @package Codehaveli\Wbitly
  */
 
-namespace Codehaveli\Wbitly;
+namespace Codehaveli\Wbitly\API;
 
+use Codehaveli\Wbitly\Admin\Manager;
+use Codehaveli\Wbitly\Util\Logger;
 use WP_Error;
 use WP_REST_Request;
 

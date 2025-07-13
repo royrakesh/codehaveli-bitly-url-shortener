@@ -8,7 +8,7 @@
  * @package Codehaveli\Wbitly
  */
 
-namespace Codehaveli\Wbitly;
+namespace Codehaveli\Wbitly\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

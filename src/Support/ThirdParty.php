@@ -5,7 +5,7 @@
  * @package Codehaveli\Wbitly
  */
 
-namespace Codehaveli\Wbitly;
+namespace Codehaveli\Wbitly\Support;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

@@ -5,7 +5,10 @@
  * @package Codehaveli\Wbitly
  */
 
-namespace Codehaveli\Wbitly;
+namespace Codehaveli\Wbitly\API;
+
+use Codehaveli\Wbitly\Admin\OptionManager;
+use Codehaveli\Wbitly\Util\Logger;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -114,7 +117,7 @@ class BitlyAPI {
 	 * @param array|null $payload      POST body, optional.
 	 * @return array|false             Decoded response array or false on failure.
 	 */
-	private function send_request( string $endpoint, string $method, string $access_token, array $payload = null ) {
+	private function send_request( string $endpoint, string $method, string $access_token, array $payload = [] ) {
 		$args = array(
 			'method'  => strtoupper( $method ),
 			'headers' => array(

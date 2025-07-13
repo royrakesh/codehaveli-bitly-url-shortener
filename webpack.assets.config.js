@@ -5,7 +5,7 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const createConfig = (mode, isMinified) => ({
   mode,
   entry: {
-    admin: path.resolve(__dirname, 'assets/admin/admin.js'),
+    admin: path.resolve(__dirname, 'assets/admin/wbitly.js'),
     sidebar: path.resolve(__dirname, 'assets/admin/sidebar.js'),
   },
   output: {

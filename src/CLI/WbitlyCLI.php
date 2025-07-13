@@ -5,8 +5,11 @@ if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
 	return;
 }
 
+use Codehaveli\Wbitly\Admin\Manager;
+use Codehaveli\Wbitly\Admin\OptionManager;
+use Codehaveli\Wbitly\API\BitlyAPI;
 use WP_CLI;
-use WP_CLI\Utils;
+
 
 class WbitlyCLI {
 

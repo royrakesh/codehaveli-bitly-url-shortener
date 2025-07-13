@@ -1,6 +1,6 @@
 <?php
 
-namespace Codehaveli\Wbitly;
+namespace Codehaveli\Wbitly\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -30,7 +30,7 @@ class PostColumn {
 		foreach ( self::$post_types as $post_type ) {
 			add_filter( "manage_{$post_type}_posts_columns", array( self::class, 'add_share_column' ) );
 			add_action( "manage_{$post_type}_posts_custom_column", array( self::class, 'render_share_column' ), 10, 2 );
-			add_action( 'admin_footer', array( self::class, 'print_copy_script' ) );
+			// add_action( 'admin_footer', array( self::class, 'print_copy_script' ) );
 		}
 	}
 

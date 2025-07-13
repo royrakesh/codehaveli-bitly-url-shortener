@@ -5,7 +5,7 @@
  * @package Codehaveli\Wbitly
  */
 
-namespace Codehaveli\Wbitly;
+namespace Codehaveli\Wbitly\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -50,9 +50,10 @@ class Assets {
 
 		wp_localize_script(
 			'wbitly-js',
-			'wbitlyJS',
+			'wbitlyData',
 			array(
-				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+				'rest_url'      => esc_url_raw( rest_url() ),
+				'nonce'         => wp_create_nonce( 'wp_rest' ),
 			)
 		);
 	}
@@ -72,6 +73,8 @@ class Assets {
 			true
 		);
 
+		wp_set_script_translations( 'wbitly-sidebar', 'wbitly', WBITLY_PLUGIN_PATH . 'languages' );
+
 		global $post;
 		$post_id = ( isset( $post ) && is_object( $post ) && isset( $post->ID ) ) ? intval( $post->ID ) : 0;
 
@@ -80,7 +83,7 @@ class Assets {
 
 		wp_localize_script(
 			'wbitly-sidebar',
-			'wbitlyData',
+			'wbitlyPostData',
 			array(
 				'postId'        => $post_id,
 				'accessToken'   => $token ? 1 : '',

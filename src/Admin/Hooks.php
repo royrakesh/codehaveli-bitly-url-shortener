@@ -6,7 +6,9 @@
  * @package Codehaveli\Wbitly
  */
 
-namespace Codehaveli\Wbitly;
+namespace Codehaveli\Wbitly\Admin;
+
+use Codehaveli\Wbitly\Util\Logger;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Prevent direct access.
