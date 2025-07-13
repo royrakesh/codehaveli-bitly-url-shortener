@@ -42,6 +42,8 @@ function wbitly_check_requirements() {
 	$errors = array();
 
 	if ( version_compare( PHP_VERSION, $required_php, '<' ) ) {
+		// translators: %1$s: Required PHP version, %2$s: Current PHP version
+
 		$errors[] = sprintf(
 			__( 'Bitly URL Shortener requires PHP version %1$s or higher. You are running version %2$s.', 'wbitly' ),
 			$required_php,
@@ -51,6 +53,7 @@ function wbitly_check_requirements() {
 
 	global $wp_version;
 	if ( version_compare( $wp_version, $required_wp, '<' ) ) {
+		// translators: %1$s: Required WordPress version, %2$s: Current WordPress version
 		$errors[] = sprintf(
 			__( 'Bitly URL Shortener requires WordPress version %1$s or higher. You are running version %2$s.', 'wbitly' ),
 			$required_wp,

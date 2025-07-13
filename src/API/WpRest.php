@@ -203,6 +203,7 @@ class WpRest {
 
 			include $filepath;
 		} else {
+			// translators: %s: The full path to the missing template file
 			Logger::error( sprintf( __( 'Template file not found: %s', 'wbitly' ), $filepath ) );
 		}
 	}

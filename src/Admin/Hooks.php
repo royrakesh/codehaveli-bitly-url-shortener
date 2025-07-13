@@ -8,6 +8,7 @@
 
 namespace Codehaveli\Wbitly\Admin;
 
+use Codehaveli\Wbitly\API\BitlyAPI;
 use Codehaveli\Wbitly\Util\Logger;
 
 if ( ! defined( 'ABSPATH' ) ) {
