@@ -103,16 +103,4 @@ jobs:
             ${{ env.PLUGIN_SLUG }}.zip
             ${{ env.BUILD_DIR }}
 
-      # -----------------------------
-      # STEP 9: Deploy to WordPress.org
-      # -----------------------------
-      - name: Deploy to WordPress.org
-        if: success()
-        uses: 10up/action-wordpress-plugin-deploy@v3
-        with:
-          slug: ${{ env.PLUGIN_SLUG }}
-          build-dir: ${{ env.BUILD_DIR }}
-          assets-dir: .wordpress-org
-        env:
-          SVN_USERNAME: ${{ secrets.WPORG_USERNAME }}
-          SVN_PASSWORD: ${{ secrets.WPORG_PASSWORD }}
+      
