@@ -1,0 +1,118 @@
+name: Build, Test & Deploy to WordPress.org
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-test-deploy:
+    name: Build, Test, and Deploy
+    runs-on: ubuntu-latest
+
+    env:
+      PLUGIN_SLUG: codehaveli-bitly-url-shortener
+      BUILD_DIR: wordpress/codehaveli-bitly-url-shortener
+
+    steps:
+      # -----------------------------
+      # STEP 1: Checkout code
+      # -----------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # -----------------------------
+      # STEP 2: Setup PHP & Composer
+      # -----------------------------
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, json, xml, ctype, tokenizer
+          tools: composer, phpunit
+          coverage: none
+
+      - name: Validate Composer
+        run: composer validate --strict
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      # -----------------------------
+      # STEP 3: Setup Node.js & Build
+      # -----------------------------
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build plugin assets
+        run: npm run build
+
+      # -----------------------------
+      # STEP 4: Run PHPStan (Static Analysis)
+      # -----------------------------
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse src --level=7
+
+      # -----------------------------
+      # STEP 5: Run PHPUnit Tests
+      # -----------------------------
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit --colors=always
+
+      # -----------------------------
+      # STEP 6: Prepare Build Folder
+      # -----------------------------
+      - name: Prepare plugin directory
+        run: |
+          mkdir -p $BUILD_DIR
+          rsync -av \
+            --exclude='.git*' \
+            --exclude='node_modules' \
+            --exclude='tests' \
+            --exclude='.github' \
+            --exclude='composer.lock' \
+            --exclude='package-lock.json' \
+            --exclude='webpack.*.js' \
+            --exclude='phpunit.xml' \
+            ./ $BUILD_DIR/
+          cp -r vendor $BUILD_DIR/vendor
+
+      # -----------------------------
+      # STEP 7: Zip Plugin
+      # -----------------------------
+      - name: Create zip archive
+        run: |
+          cd wordpress
+          zip -r ../${{ env.PLUGIN_SLUG }}.zip ${{ env.PLUGIN_SLUG }}
+
+      # -----------------------------
+      # STEP 8: Upload Artifact (Optional)
+      # -----------------------------
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.PLUGIN_SLUG }}
+          path: |
+            ${{ env.PLUGIN_SLUG }}.zip
+            ${{ env.BUILD_DIR }}
+
+      # -----------------------------
+      # STEP 9: Deploy to WordPress.org
+      # -----------------------------
+      - name: Deploy to WordPress.org
+        if: success()
+        uses: 10up/action-wordpress-plugin-deploy@v3
+        with:
+          slug: ${{ env.PLUGIN_SLUG }}
+          build-dir: ${{ env.BUILD_DIR }}
+          assets-dir: .wordpress-org
+        env:
+          SVN_USERNAME: ${{ secrets.WPORG_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.WPORG_PASSWORD }}
