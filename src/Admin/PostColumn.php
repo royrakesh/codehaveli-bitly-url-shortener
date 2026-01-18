@@ -30,7 +30,6 @@ class PostColumn {
 		foreach ( self::$post_types as $post_type ) {
 			add_filter( "manage_{$post_type}_posts_columns", array( self::class, 'add_share_column' ) );
 			add_action( "manage_{$post_type}_posts_custom_column", array( self::class, 'render_share_column' ), 10, 2 );
-			// add_action( 'admin_footer', array( self::class, 'print_copy_script' ) );
 		}
 	}
 
@@ -95,21 +94,21 @@ class PostColumn {
 		?>
 		<div class="wbitly-url-share">
 			<p>
-				<a href="<?php echo $esc_url; ?>" target="_blank" rel="noopener noreferrer">
-					<?php echo $esc_url; ?>
+				<a href="<?php echo esc_url( $esc_url ); ?>" target="_blank" rel="noopener noreferrer">
+					<?php echo esc_html( $esc_url ); ?>
 				</a>
 			</p>
 			<div class="wbitly-social-icons">
-				<a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $encoded_url; ?>"
+				<a href="<?php echo esc_url( 'https://www.facebook.com/sharer/sharer.php?u=' . $encoded_url ); ?>"
 					target="_blank" rel="noopener noreferrer"
 					class="wbitly-icon wbitly-icon-facebook"
 					title="<?php echo esc_attr__( 'Share on Facebook', 'wbitly' ); ?>"></a>
 
-				<a href="mailto:?subject=<?php echo $email_subject; ?>&body=<?php echo $encoded_url; ?>"
+				<a href="<?php echo esc_url( 'mailto:?subject=' . $email_subject . '&body=' . $encoded_url ); ?>"
 					class="wbitly-icon wbitly-icon-email"
 					title="<?php echo esc_attr__( 'Share via Email', 'wbitly' ); ?>"></a>
 
-				<a href="https://twitter.com/intent/tweet?url=<?php echo $encoded_url; ?>"
+				<a href="<?php echo esc_url( 'https://twitter.com/intent/tweet?url=' . $encoded_url ); ?>"
 					target="_blank" rel="noopener noreferrer"
 					class="wbitly-icon wbitly-icon-x"
 					title="<?php echo esc_attr__( 'Share on X (Twitter)', 'wbitly' ); ?>"></a>
@@ -121,70 +120,6 @@ class PostColumn {
 					style="background: none; border: none; cursor: pointer; padding: 0;"></button>
 			</div>
 		</div>
-		<?php
-	}
-
-	/**
-	 * Print inline JS script to handle copy-to-clipboard.
-	 */
-	public static function print_copy_script() {
-		?>
-		<script type="text/javascript">
-			(function() {
-				document.querySelectorAll('.wbitly-icon-copy').forEach(function(button) {
-					button.addEventListener('click', function() {
-						var copyUrl = this.getAttribute('data-copy-text');
-						if (copyUrl) {
-							const textarea = document.createElement("textarea");
-							textarea.value = copyUrl;
-							document.body.appendChild(textarea);
-							textarea.select();
-							try {
-								document.execCommand("copy");
-								alert("URL copied to clipboard!");
-							} catch (err) {
-								alert("Copy not supported");
-							}
-							document.body.removeChild(textarea);
-						}
-					});
-				});
-
-
-				document.querySelectorAll('.wbitly-generate-url').forEach(function(button) {
-					button.addEventListener('click', function() {
-						const postId = this.getAttribute('data-post-id');
-						const btn = this;
-						btn.disabled = true;
-						btn.textContent = 'Generating...';
-
-						fetch('<?php echo esc_url( rest_url( 'wbitly/v1/generate/' ) ); ?>' + postId, {
-								method: 'POST',
-								headers: {
-									'Content-Type': 'application/json',
-									'X-WP-Nonce': '<?php echo wp_create_nonce( 'wp_rest' ); ?>'
-								},
-								body: JSON.stringify({})
-							})
-							.then(response => response.json())
-							.then(data => {
-								
-								if (data && data.share_block) {
-									btn.parentElement.innerHTML = data.share_block;
-								} else {
-									btn.textContent = 'Failed';
-									alert(data.message || 'Error generating URL');
-								}
-							})
-							.catch(err => {
-								console.error(err);
-								btn.textContent = 'Error';
-								alert('Request failed.');
-							});
-					});
-				});
-			})();
-		</script>
 		<?php
 	}
 }

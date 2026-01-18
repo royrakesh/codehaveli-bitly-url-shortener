@@ -46,12 +46,21 @@ class WbitlyCLI {
 		// Determine post type to use (default: post)
 		if ( isset( $assoc_args['post_type'] ) ) {
 			$post_type = sanitize_key( $assoc_args['post_type'] );
+			// Validate post type exists.
+			if ( ! post_type_exists( $post_type ) ) {
+				WP_CLI::error( "Post type '{$post_type}' does not exist." );
+				return;
+			}
 		} else {
 			$post_type = 'post';
 		}
 
 		// Validate post type against enabled types
 		$supported_types = OptionManager::get( 'wbitly_custom_post', array( 'post' ) );
+		if ( ! is_array( $supported_types ) ) {
+			$supported_types = array( 'post' );
+		}
+		
 		if ( ! in_array( $post_type, $supported_types, true ) ) {
 			WP_CLI::error( "Post type '{$post_type}' is not enabled for Bitly shortlinks." );
 			return;
@@ -88,18 +97,39 @@ class WbitlyCLI {
 			);
 			$post_ids = $query->posts;
 		} elseif ( isset( $assoc_args['ids'] ) ) {
-			$post_ids = array_filter( array_map( 'absint', explode( ',', $assoc_args['ids'] ) ) );
+			// Validate and sanitize IDs input.
+			$ids_input = sanitize_text_field( $assoc_args['ids'] );
+			if ( empty( $ids_input ) ) {
+				WP_CLI::error( 'Invalid IDs provided. Please provide comma-separated post IDs.' );
+				return;
+			}
+			
+			$post_ids = array_filter( array_map( 'absint', explode( ',', $ids_input ) ) );
+			
+			// Validate all IDs are positive integers.
+			if ( empty( $post_ids ) ) {
+				WP_CLI::error( 'No valid post IDs found. Please provide valid numeric post IDs.' );
+				return;
+			}
+			
 			// Only keep posts where meta does not exist
 			$post_ids = array_filter(
 				$post_ids,
 				function ( $pid ) use ( $post_type ) {
-					return get_post_status( $pid ) === 'publish'
+					return $pid > 0
+					&& get_post( $pid ) !== null
+					&& get_post_status( $pid ) === 'publish'
 					&& get_post_type( $pid ) === $post_type
 					&& get_post_meta( $pid, '_wbitly_shorturl', true ) === '';
 				}
 			);
 		} elseif ( isset( $assoc_args['first'] ) ) {
-			$first    = absint( $assoc_args['first'] );
+			// Validate 'first' is a positive integer.
+			$first = absint( $assoc_args['first'] );
+			if ( $first <= 0 ) {
+				WP_CLI::error( 'The --first parameter must be a positive integer.' );
+				return;
+			}
 			$query    = new \WP_Query(
 				array(
 					'post_type'      => $supported_types,

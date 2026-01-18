@@ -22,12 +22,18 @@ import metadata from './block.json';
 
 /**
  * Every block starts by registering a new block type definition.
+ * For API version 3, we use registerBlockType with metadata.
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
  */
-registerBlockType( metadata.name, {
+registerBlockType( metadata, {
 	/**
 	 * @see ./edit.js
 	 */
 	edit: Edit,
+	/**
+	 * Save function returns null for dynamic blocks.
+	 * The block is rendered server-side via render.php.
+	 */
+	save: () => null,
 } );

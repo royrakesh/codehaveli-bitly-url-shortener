@@ -5,11 +5,22 @@
 	"version": "0.1.0",
 	"title": "Bitly Share Icons",
 	"category": "widgets",
-	"icon": "smiley",
+	"icon": "share",
 	"description": "Block for displaying Bitly share icons.",
+	"keywords": ["bitly", "share", "social", "icons"],
 	"example": {},
 	"supports": {
-		"html": false
+		"html": false,
+		"align": true,
+		"alignWide": false,
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"color": {
+			"background": false,
+			"text": false
+		}
 	},
 	"textdomain": "wbitly",
 	"editorScript": "file:./index.js",
@@ -31,8 +42,8 @@
 			"default": 24
 		},
 		"fillColor": {
-      		"type": "string",
-      		"default": null
-    	}
+			"type": "string",
+			"default": null
+		}
 	}
 }

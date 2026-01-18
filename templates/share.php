@@ -10,16 +10,16 @@
 		</a>
 	</p>
 	<div class="wbitly-social-icons">
-		<a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $encoded_url; ?>"
+		<a href="<?php echo esc_url( 'https://www.facebook.com/sharer/sharer.php?u=' . $encoded_url ); ?>"
 			target="_blank" rel="noopener noreferrer"
 			class="wbitly-icon wbitly-icon-facebook"
 			title="<?php esc_attr_e( 'Share on Facebook', 'wbitly' ); ?>"></a>
 
-		<a href="mailto:?subject=<?php echo $title; ?>&body=<?php echo $encoded_url; ?>"
+		<a href="<?php echo esc_url( 'mailto:?subject=' . $title . '&body=' . $encoded_url ); ?>"
 			class="wbitly-icon wbitly-icon-email"
 			title="<?php esc_attr_e( 'Share via Email', 'wbitly' ); ?>"></a>
 
-		<a href="https://twitter.com/intent/tweet?url=<?php echo $encoded_url; ?>"
+		<a href="<?php echo esc_url( 'https://twitter.com/intent/tweet?url=' . $encoded_url ); ?>"
 			target="_blank" rel="noopener noreferrer"
 			class="wbitly-icon wbitly-icon-x"
 			title="<?php esc_attr_e( 'Share on X (Twitter)', 'wbitly' ); ?>"></a>
