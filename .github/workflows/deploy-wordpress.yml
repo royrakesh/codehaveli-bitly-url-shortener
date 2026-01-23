@@ -1,106 +1,50 @@
-name: Build, Test & Deploy to WordPress.org
-
+name: Deploy to WordPress.org
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-
+  release:
+    types: [published]
 jobs:
-  build-test-deploy:
-    name: Build, Test, and Deploy
+  deploy:
+    name: Deploy on Release
     runs-on: ubuntu-latest
-
-    env:
-      PLUGIN_SLUG: codehaveli-bitly-url-shortener
-      BUILD_DIR: wordpress/codehaveli-bitly-url-shortener
-
     steps:
-      # -----------------------------
-      # STEP 1: Checkout code
-      # -----------------------------
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - uses: actions/checkout@master
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        tools: composer
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with: 
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Install Composer dependencies
+      run: composer install --no-dev --optimize-autoloader
+    
+    - name: Install npm dependencies
+      run: npm ci
+    
+    - name: Build blocks and assets
+      run: npm run build
+    
+    - name: WordPress Plugin Deploy
+      uses: 10up/action-wordpress-plugin-deploy@stable
+      with:
+        generate-zip: true
+      env:
+        SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+        SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+        SLUG: codehaveli-bitly-url-shortener
+    - name: Upload release asset
+      uses: softprops/action-gh-release@v2
+      env:
+        # Note, this is an exception to action secrets: GH_TOKEN is always available and provides access to
+        # the current repository this action runs in.
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # -----------------------------
-      # STEP 2: Setup PHP & Composer
-      # -----------------------------
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.3'
-          extensions: mbstring, json, xml, ctype, tokenizer
-          tools: composer, phpunit
-          coverage: none
-
-      - name: Validate Composer
-        run: composer validate --strict
-
-      - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist
-
-      # -----------------------------
-      # STEP 3: Setup Node.js & Build
-      # -----------------------------
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install npm dependencies
-        run: npm ci
-
-      - name: Build plugin assets
-        run: npm run build
-
-      # -----------------------------
-      # STEP 4: Run PHPStan (Static Analysis)
-      # -----------------------------
-      - name: Run PHPStan
-        run: vendor/bin/phpstan analyse src --level=7
-
-      # -----------------------------
-      # STEP 5: Run PHPUnit Tests
-      # -----------------------------
-      - name: Run PHPUnit
-        run: vendor/bin/phpunit --colors=always
-
-      # -----------------------------
-      # STEP 6: Prepare Build Folder
-      # -----------------------------
-      - name: Prepare plugin directory
-        run: |
-          mkdir -p $BUILD_DIR
-          rsync -av \
-            --exclude='.git*' \
-            --exclude='node_modules' \
-            --exclude='tests' \
-            --exclude='.github' \
-            --exclude='composer.lock' \
-            --exclude='package-lock.json' \
-            --exclude='webpack.*.js' \
-            --exclude='phpunit.xml' \
-            ./ $BUILD_DIR/
-          cp -r vendor $BUILD_DIR/vendor
-
-      # -----------------------------
-      # STEP 7: Zip Plugin
-      # -----------------------------
-      - name: Create zip archive
-        run: |
-          cd wordpress
-          zip -r ../${{ env.PLUGIN_SLUG }}.zip ${{ env.PLUGIN_SLUG }}
-
-      # -----------------------------
-      # STEP 8: Upload Artifact (Optional)
-      # -----------------------------
-      - name: Upload plugin artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.PLUGIN_SLUG }}
-          path: |
-            ${{ env.PLUGIN_SLUG }}.zip
-            ${{ env.BUILD_DIR }}
-
-      
+      with:
+        # Provide what the file should be named when attached to the release (plugin-name.zip)
+        files: ${{ github.workspace }}/codehaveli-bitly-url-shortener.zip
