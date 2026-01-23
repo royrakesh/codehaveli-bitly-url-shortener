@@ -14,7 +14,6 @@ import { __ } from "@wordpress/i18n";
 import {
 	useBlockProps,
 	InspectorControls,
-	PanelColorSettings,
 } from "@wordpress/block-editor";
 
 /**
@@ -172,10 +171,6 @@ export default function Edit({ attributes, setAttributes }) {
 		setAttributes({ showIcons: newIcons });
 	};
 
-	const onChangeFillColor = (newColor) => {
-		setAttributes({ fillColor: newColor });
-	};
-
 	return (
 		<Fragment>
 			<InspectorControls>
@@ -206,7 +201,7 @@ export default function Edit({ attributes, setAttributes }) {
 							type="number"
 							value={customSize}
 							onChange={(value) =>
-								setAttributes({ customSize: parseInt(value, 10) || 24 })
+								setAttributes({ customSize: Number.parseInt(value, 10) || 24 })
 							}
 							min={1}
 						/>
@@ -226,12 +221,14 @@ export default function Edit({ attributes, setAttributes }) {
 			</InspectorControls>
 
 			<div {...useBlockProps()}>
-				{showIcons.map((icon) => (
-					<div key={icon} className={`icon icon-${icon}`}>
-						let finalSize = iconSize === "custom" ? attributes.customSize : iconSize;
-						{renderIcon(icon, finalSize, fillColor || fillColors[icon])}
-					</div>
-				))}
+				{showIcons.map((icon) => {
+					const finalSize = iconSize === "custom" ? customSize : Number.parseInt(iconSize, 10);
+					return (
+						<div key={icon} className={`icon icon-${icon}`}>
+							{renderIcon(icon, finalSize, fillColor || fillColors[icon])}
+						</div>
+					);
+				})}
 			</div>
 		</Fragment>
 	);

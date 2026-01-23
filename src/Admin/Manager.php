@@ -44,11 +44,27 @@ class Manager {
 	public static function update_short_url( $post, string $short_url ) {
 		$post_id = is_a( $post, '\WP_Post' ) ? $post->ID : absint( $post );
 
-		if ( ! $post_id ) {
+		if ( ! $post_id || $post_id <= 0 ) {
 			return false;
 		}
 
-		$short_url = filter_var( $short_url, FILTER_VALIDATE_URL ) ? esc_url_raw( $short_url ) : '';
+		// Validate URL is not empty and is a valid URL.
+		if ( empty( $short_url ) || ! is_string( $short_url ) ) {
+			return false;
+		}
+
+		// Validate URL format.
+		if ( ! filter_var( $short_url, FILTER_VALIDATE_URL ) ) {
+			return false;
+		}
+
+		$short_url = esc_url_raw( $short_url );
+		
+		// Ensure URL is still valid after sanitization.
+		if ( empty( $short_url ) ) {
+			return false;
+		}
+
 		return update_post_meta( $post_id, '_wbitly_shorturl', $short_url );
 	}
 

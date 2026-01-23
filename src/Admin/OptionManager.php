@@ -72,13 +72,114 @@ class OptionManager {
 	 *
 	 * @param string $key   Option key.
 	 * @param mixed  $value Option value.
-	 * @return void
+	 * @return bool True on success, false on failure.
 	 */
 	public static function set( $key, $value ) {
-		$options         = get_option( self::$option_key, array() );
-		$key             = sanitize_key( $key );
-		$options[ $key ] = is_array( $value ) ? array_map( 'sanitize_text_field', $value ) : sanitize_text_field( $value );
-		update_option( self::$option_key, $options );
+		// Validate key.
+		if ( ! is_string( $key ) || empty( $key ) ) {
+			return false;
+		}
+
+		$key = sanitize_key( $key );
+
+		// Define allowed option keys for validation.
+		$allowed_keys = array(
+			'access_token',
+			'group_guid',
+			'bitly_domain',
+			'wbitly_social_share',
+			'wbitly_custom_post',
+		);
+
+		// Validate key is in allowed list.
+		if ( ! in_array( $key, $allowed_keys, true ) ) {
+			return false;
+		}
+
+		$options = get_option( self::$option_key, array() );
+
+		// Validate and sanitize value based on key type.
+		switch ( $key ) {
+			case 'access_token':
+				// Access token should be a non-empty string.
+				if ( ! is_string( $value ) || empty( trim( $value ) ) ) {
+					return false;
+				}
+				// Bitly access tokens are typically alphanumeric with hyphens/underscores, max 255 chars.
+				$value = sanitize_text_field( $value );
+				if ( strlen( $value ) > 255 ) {
+					return false;
+				}
+				break;
+
+			case 'group_guid':
+				// GUID should be a non-empty string, typically alphanumeric with hyphens.
+				if ( ! is_string( $value ) || empty( trim( $value ) ) ) {
+					return false;
+				}
+				$value = sanitize_text_field( $value );
+				// GUID format validation (alphanumeric, hyphens, underscores).
+				if ( ! preg_match( '/^[a-zA-Z0-9_-]+$/', $value ) ) {
+					return false;
+				}
+				break;
+
+			case 'bitly_domain':
+				// Domain is optional, but if provided should be valid domain format.
+				if ( ! empty( $value ) ) {
+					$value = sanitize_text_field( $value );
+					// Remove protocol if present.
+					$value = preg_replace( '#^https?://#', '', $value );
+					// Remove trailing slash.
+					$value = rtrim( $value, '/' );
+					// Validate domain format.
+					if ( ! preg_match( '/^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/', $value ) ) {
+						return false;
+					}
+				} else {
+					$value = '';
+				}
+				break;
+
+			case 'wbitly_social_share':
+				// Should be 'enable' or empty string.
+				$value = sanitize_text_field( $value );
+				if ( ! in_array( $value, array( 'enable', '' ), true ) ) {
+					$value = '';
+				}
+				break;
+
+			case 'wbitly_custom_post':
+				// Should be an array of valid post type names.
+				if ( ! is_array( $value ) ) {
+					$value = array();
+				}
+				// Validate each post type exists.
+				$validated_post_types = array();
+				$registered_types    = get_post_types( array( 'public' => true ), 'names' );
+				foreach ( $value as $post_type ) {
+					$post_type = sanitize_key( $post_type );
+					if ( in_array( $post_type, $registered_types, true ) ) {
+						$validated_post_types[] = $post_type;
+					}
+				}
+				// Ensure at least one post type is selected (default to 'post').
+				if ( empty( $validated_post_types ) ) {
+					$validated_post_types = array( 'post' );
+				}
+				$value = array_unique( $validated_post_types );
+				break;
+
+			default:
+				// For any other keys, use basic sanitization.
+				$value = is_array( $value ) ? array_map( 'sanitize_text_field', $value ) : sanitize_text_field( $value );
+				break;
+		}
+
+		$options[ $key ] = $value;
+		$result          = update_option( self::$option_key, $options );
+
+		return $result;
 	}
 
 	/**

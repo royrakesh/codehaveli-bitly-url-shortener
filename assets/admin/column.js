@@ -44,6 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		.then(res => res.json())
 		.then(data => {
 			if (data?.share_block) {
+				// Security: share_block is HTML from server-side template (already escaped).
+				// Using innerHTML is safe here as content is sanitized on server.
 				btn.parentElement.innerHTML = data.share_block;
 			} else {
 				btn.textContent = 'Failed';

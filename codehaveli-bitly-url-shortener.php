@@ -19,6 +19,7 @@
 use Codehaveli\Wbitly\Admin\Assets;
 use Codehaveli\Wbitly\Admin\Hooks;
 use Codehaveli\Wbitly\Admin\Manager;
+use Codehaveli\Wbitly\Admin\Metabox;
 use Codehaveli\Wbitly\Admin\OptionManager;
 use Codehaveli\Wbitly\Admin\PostColumn;
 use Codehaveli\Wbitly\Admin\Settings;
@@ -116,6 +117,7 @@ function wbitly_init_plugin() {
 			WpRest::init();
 			Settings::init();
 			Assets::init();
+			Metabox::init();
 			ThirdParty::init();
 		}
 	);
@@ -148,8 +150,22 @@ function get_wbitly_short_url( $post_id = null ) {
 
 		$url = Manager::get_short_url( $post_id );
 		return $url && filter_var( $url, FILTER_VALIDATE_URL ) ? esc_url_raw( $url ) : false;
-	} catch ( Exception $e ) {
+	} catch ( \InvalidArgumentException $e ) {
+		Logger::error( sprintf( 'Bitly URL Shortener Error: %s', $e->getMessage() ) );
+		return false;
+	} catch ( \Exception $e ) {
 		Logger::error( sprintf( 'Bitly URL Shortener Error: %s', $e->getMessage() ) );
 		return false;
 	}
+}
+
+/**
+ * Get a template file from the plugin's templates directory.
+ *
+ * @param string $filename The name of the template file.
+ * @param array  $args     Optional. Arguments to pass to the template.
+ * @return void
+ */
+function wbitly_get_template( $filename, $args = array() ) {
+	\Codehaveli\Wbitly\API\WpRest::wbitly_get_template( $filename, $args );
 }

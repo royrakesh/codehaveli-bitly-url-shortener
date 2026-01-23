@@ -7,6 +7,8 @@
 
 namespace Codehaveli\Wbitly\Admin;
 
+use Codehaveli\Wbitly\API\BitlyAPI;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -112,16 +114,118 @@ class Settings {
 	 * Sanitize settings input.
 	 *
 	 * @param array $input Raw input array.
-	 * @return array Sanitized input.
+	 * @return array Sanitized and validated input.
 	 */
 	public function sanitize( $input ) {
-		return array(
-			'access_token'        => sanitize_text_field( $input['access_token'] ?? '' ),
-			'group_guid'          => sanitize_text_field( $input['group_guid'] ?? '' ),
-			'bitly_domain'        => sanitize_text_field( $input['bitly_domain'] ?? '' ),
-			'wbitly_social_share' => sanitize_text_field( $input['wbitly_social_share'] ?? '' ),
-			'wbitly_custom_post'  => array_map( 'sanitize_text_field', $input['wbitly_custom_post'] ?? array() ),
-		);
+		// Ensure input is an array.
+		if ( ! is_array( $input ) ) {
+			return array();
+		}
+
+		$sanitized = array();
+
+		// Validate and sanitize access_token.
+		if ( isset( $input['access_token'] ) ) {
+			$token = sanitize_text_field( $input['access_token'] );
+			// Validate token is not empty and within reasonable length.
+			if ( ! empty( $token ) && strlen( $token ) <= 255 ) {
+				$sanitized['access_token'] = $token;
+			} else {
+				$sanitized['access_token'] = '';
+				add_settings_error(
+					'wbitly_access_token',
+					'invalid_token',
+					__( 'Access token is invalid or too long. Please check your token.', 'wbitly' )
+				);
+			}
+		} else {
+			$sanitized['access_token'] = '';
+		}
+
+		// Validate and sanitize group_guid.
+		if ( isset( $input['group_guid'] ) ) {
+			$guid = sanitize_text_field( $input['group_guid'] );
+			// Validate GUID format (alphanumeric, hyphens, underscores).
+			if ( ! empty( $guid ) && preg_match( '/^[a-zA-Z0-9_-]+$/', $guid ) ) {
+				$sanitized['group_guid'] = $guid;
+			} else {
+				$sanitized['group_guid'] = '';
+				if ( ! empty( $guid ) ) {
+					add_settings_error(
+						'wbitly_group_guid',
+						'invalid_guid',
+						__( 'Group GUID format is invalid. Please check your GUID.', 'wbitly' )
+					);
+				}
+			}
+		} else {
+			$sanitized['group_guid'] = '';
+		}
+
+		// Validate and sanitize bitly_domain.
+		if ( isset( $input['bitly_domain'] ) ) {
+			$domain = sanitize_text_field( $input['bitly_domain'] );
+			if ( ! empty( $domain ) ) {
+				// Remove protocol if present.
+				$domain = preg_replace( '#^https?://#', '', $domain );
+				// Remove trailing slash.
+				$domain = rtrim( $domain, '/' );
+				// Validate domain format.
+				if ( preg_match( '/^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/', $domain ) ) {
+					$sanitized['bitly_domain'] = $domain;
+				} else {
+					$sanitized['bitly_domain'] = '';
+					add_settings_error(
+						'wbitly_domain',
+						'invalid_domain',
+						__( 'Domain format is invalid. Please enter a valid domain name.', 'wbitly' )
+					);
+				}
+			} else {
+				$sanitized['bitly_domain'] = '';
+			}
+		} else {
+			$sanitized['bitly_domain'] = '';
+		}
+
+		// Validate and sanitize wbitly_social_share.
+		if ( isset( $input['wbitly_social_share'] ) ) {
+			$social_share = sanitize_text_field( $input['wbitly_social_share'] );
+			// Only allow 'enable' or empty string.
+			if ( 'enable' === $social_share ) {
+				$sanitized['wbitly_social_share'] = 'enable';
+			} else {
+				$sanitized['wbitly_social_share'] = '';
+			}
+		} else {
+			$sanitized['wbitly_social_share'] = '';
+		}
+
+		// Validate and sanitize wbitly_custom_post.
+		if ( isset( $input['wbitly_custom_post'] ) && is_array( $input['wbitly_custom_post'] ) ) {
+			$post_types      = array_map( 'sanitize_key', $input['wbitly_custom_post'] );
+			$registered_types = get_post_types( array( 'public' => true ), 'names' );
+			$validated_types  = array();
+
+			// Only include registered post types.
+			foreach ( $post_types as $post_type ) {
+				if ( in_array( $post_type, $registered_types, true ) ) {
+					$validated_types[] = $post_type;
+				}
+			}
+
+			// Ensure at least one post type is selected (default to 'post').
+			if ( empty( $validated_types ) ) {
+				$validated_types = array( 'post' );
+			}
+
+			$sanitized['wbitly_custom_post'] = array_unique( $validated_types );
+		} else {
+			// Default to 'post' if not provided or invalid.
+			$sanitized['wbitly_custom_post'] = array( 'post' );
+		}
+
+		return $sanitized;
 	}
 
 	/**
@@ -143,7 +247,7 @@ class Settings {
 	 * @return void
 	 */
 	public function field_group_guid() {
-		$guid_url = esc_url( admin_url( 'tools.php?page=wbitly&wbitly_guid=update' ) );
+		$guid_url = esc_url( wp_nonce_url( admin_url( 'tools.php?page=wbitly&wbitly_guid=update' ), 'wbitly_update_guid' ) );
 		printf(
 			'<input class="regular-text" type="text" name="ch_wbitly_url_option[group_guid]" value="%s" /> <a href="%s" class="button button-primary">%s</a>',
 			esc_attr( OptionManager::get( 'group_guid', '' ) ),
@@ -209,15 +313,25 @@ class Settings {
 		if (
 			current_user_can( 'manage_options' ) &&
 			isset( $_GET['page'], $_GET['wbitly_guid'] ) &&
-			sanitize_text_field( $_GET['page'] ) === 'wbitly' &&
-			sanitize_text_field( $_GET['wbitly_guid'] ) === 'update'
+			sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'wbitly' &&
+			sanitize_text_field( wp_unslash( $_GET['wbitly_guid'] ) ) === 'update'
 		) {
+			// Verify nonce for security.
+			if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'wbitly_update_guid' ) ) {
+				wp_die( esc_html__( 'Security check failed.', 'wbitly' ) );
+			}
 
 			$api  = new BitlyAPI();
 			$guid = $api->get_group_guid();
 
 			if ( $guid ) {
 				OptionManager::set( 'group_guid', $guid );
+				// Clear the cached GUID to force refresh.
+				$access_token = OptionManager::get( 'access_token' );
+				if ( $access_token ) {
+					$cache_key = 'wbitly_group_guid_' . md5( $access_token );
+					delete_transient( $cache_key );
+				}
 				set_transient( 'wbitly_guid_success', true, 5 );
 			} else {
 				set_transient( 'wbitly_guid_error', true, 5 );

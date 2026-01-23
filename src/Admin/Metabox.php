@@ -93,11 +93,15 @@ class Metabox {
 			echo '</div>';
 
 			if ( OptionManager::get( 'wbitly_social_share' ) === 'enable' ) {
+				$esc_url     = esc_url( $bitly_url );
+				$encoded_url = rawurlencode( $bitly_url );
+				$title       = rawurlencode( get_the_title( $post_id ) );
 				wbitly_get_template(
 					'share.php',
 					array(
-						'post_id'   => $post_id,
-						'bitly_url' => $bitly_url,
+						'esc_url'     => $esc_url,
+						'encoded_url' => $encoded_url,
+						'title'       => $title,
 					)
 				);
 			}
