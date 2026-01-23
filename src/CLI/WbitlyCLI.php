@@ -1,5 +1,5 @@
 <?php
-namespace Codehaveli\Wbitly;
+namespace Codehaveli\Wbitly\CLI;
 
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
 	return;

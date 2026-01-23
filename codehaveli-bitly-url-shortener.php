@@ -123,8 +123,8 @@ function wbitly_init_plugin() {
 	);
 
 	// Register WP-CLI command
-	if ( defined( 'WP_CLI' ) && WP_CLI && class_exists( '\Codehaveli\Wbitly\WbitlyCLI' ) ) {
-		WP_CLI::add_command( 'wbitly', '\Codehaveli\Wbitly\WbitlyCLI' );
+	if ( defined( 'WP_CLI' ) && WP_CLI && class_exists( '\Codehaveli\Wbitly\CLI\WbitlyCLI' ) ) {
+		WP_CLI::add_command( 'wbitly', '\Codehaveli\Wbitly\CLI\WbitlyCLI' );
 	}
 }
 
