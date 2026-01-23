@@ -1,0 +1,65 @@
+# Git files
+.git/
+.github/
+.gitignore
+.gitattributes
+
+# Node.js dependencies and build tools
+node_modules/
+package.json
+package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.eslintcache
+
+# PHP dependencies
+vendor/
+composer.json
+composer.lock
+
+# Build configuration
+webpack.*.js
+*.config.js
+
+# Source files (compiled into build/)
+assets/
+blocks/
+
+# Development and testing
+phpcs.xml
+phpunit.xml
+.phpunit.result.cache
+tests/
+coverage/
+.clover
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*.bak
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Documentation (development)
+README.md
+
+# Temporary and build artifacts
+*.zip
+*.tgz
+*.map
+
+# WordPress build output (if not needed in dist)
+# Note: build/ directory should be included as it contains compiled assets

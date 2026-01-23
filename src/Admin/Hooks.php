@@ -127,19 +127,42 @@ class Hooks {
 	 * This function registers the Bitly block with WordPress.
 	 */
 	public static function create_ch_bitly_block_init() {
-
-		if ( function_exists( 'wp_register_block_types_from_metadata_collection' ) ) {
-			wp_register_block_types_from_metadata_collection( WBITLY_PLUGIN_PATH . 'build', WBITLY_PLUGIN_PATH . 'build/blocks-manifest.php' );
+		// Check if build directory exists
+		$build_path = WBITLY_PLUGIN_PATH . 'build';
+		if ( ! is_dir( $build_path ) ) {
+			Logger::error( 'Bitly block build directory not found. Please run `npm run build` to build the blocks.' );
 			return;
 		}
 
-		if ( function_exists( 'wp_register_block_metadata_collection' ) ) {
-			wp_register_block_metadata_collection( WBITLY_PLUGIN_PATH . 'build', WBITLY_PLUGIN_PATH . 'build/blocks-manifest.php' );
+		$manifest_file = $build_path . '/blocks-manifest.php';
+		
+		// Check if manifest file exists
+		if ( ! file_exists( $manifest_file ) ) {
+			Logger::error( 'Bitly block manifest file not found. Please run `npm run build` to build the blocks.' );
+			return;
 		}
 
-		$manifest_data = require WBITLY_PLUGIN_PATH . 'build/blocks-manifest.php';
+		// Use the modern WordPress function if available (WordPress 6.1+)
+		if ( function_exists( 'wp_register_block_types_from_metadata_collection' ) ) {
+			wp_register_block_types_from_metadata_collection( $build_path, $manifest_file );
+			return;
+		}
+
+		// Fallback for older WordPress versions
+		// Load manifest and register blocks manually
+		$manifest_data = require_once $manifest_file;
+		
+		if ( ! is_array( $manifest_data ) || empty( $manifest_data ) ) {
+			Logger::error( 'Bitly block manifest is empty or invalid.' );
+			return;
+		}
+
+		// Register each block from the manifest
 		foreach ( array_keys( $manifest_data ) as $block_type ) {
-			register_block_type( WBITLY_PLUGIN_PATH . "build/{$block_type}" );
+			$block_path = $build_path . '/' . $block_type;
+			if ( is_dir( $block_path ) ) {
+				register_block_type( $block_path );
+			}
 		}
 	}
 }
