@@ -6,6 +6,7 @@
 .editorconfig
 .distignore
 .wordpress-org/
+create-plugin-zip.sh
 
 
 # Node.js dependencies and build tools
