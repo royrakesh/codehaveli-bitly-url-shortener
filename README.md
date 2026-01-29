@@ -2,7 +2,7 @@
 Contributors: codehaveli,royrakesh
 Tags: Bitly, Short url, Url shortener, post, connector, social share, gutenberg
 Requires at least: 5.6
-Tested up to: 6.3
+Tested up to: 6.9
 Requires PHP: 7.4
 Stable tag: 1.5.0
 License: GPLv2 or later
@@ -34,9 +34,9 @@ Bitly URL Shortener allows you to connect your WordPress Website to the Bitly AP
 
 ### Terms of Use 
 
-This is not a Official plugin of [Bitly](https://bitly.com)
+This is not an official plugin of [https://bitly.com](https://bitly.com)
 
-This plugin only connect your [https://bitly.com](https://bitly.com) account to WordPress.
+This plugin only connects your [https://bitly.com](https://bitly.com) account to WordPress.
 
 Please read [privacy](https://bitly.com/pages/privacy) and [terms of service](https://bitly.com/pages/terms-of-service) of [Bitly](https://bitly.com) before using this plugin.
 
@@ -44,7 +44,7 @@ Please read [privacy](https://bitly.com/pages/privacy) and [terms of service](ht
 
 ### Bug reports
 
-Bug reports for Bitly URL Shortener are welcomed in our Bitly URL Shortener [repository on GitHub](https://github.com/codehaveli/codehaveli-bitly-url-shortener). Please note that GitHub is not a support forum, and that issues that are not properly qualified as bugs will be closed.
+Bug reports for Bitly URL Shortener are welcomed in our Bitly URL Shortener [repository on GitHub](https://github.com/royrakesh/codehaveli-bitly-url-shortener). Please note that GitHub is not a support forum, and that issues that are not properly qualified as bugs will be closed.
 
 ### Further Reading
 
@@ -54,7 +54,7 @@ For more info on Bitly and Codehaveli, check out the following:
 * Read "How to generate Bitly OAuth access token?" from [Codehaveli Blog](https://www.codehaveli.com/how-to-generate-bitly-oauth-access-token/)
 * Bitly [API Documentation](https://bitly.is/2XxT9BN) 
 * Follow Codehaveli on [Facebook](https://www.facebook.com/codehaveli), [Instagram](https://www.instagram.com/codehaveli/) & [Twitter](https://twitter.com/codehaveli)
-* Plugin [GitHub Repository](https://github.com/codehaveli/codehaveli-bitly-url-shortener)
+* Plugin [GitHub Repository](https://github.com/royrakesh/codehaveli-bitly-url-shortener)
 
 
 == Installation ==
@@ -108,7 +108,9 @@ The plugin provides REST API endpoints:
 * `POST /wp-json/wbitly/v1/generate/{post_id}` - Generate short URL for a post
 * `GET /wp-json/wbitly/v1/meta/{post_id}` - Get existing short URL for a post
 
-Both endpoints require authentication and appropriate permissions.
+Both endpoints require authentication and appropriate permissions. You need to:
+* Be logged in as a user with `edit_posts` capability
+* Include a valid WordPress nonce in the request header (`X-WP-Nonce`)
 
 
 

@@ -1,10 +1,10 @@
 <?php
 /**
  * Plugin Name: Bitly URL Shortener
- * Plugin URI: https://github.com/codehaveli/
+ * Plugin URI: https://github.com/royrakesh/codehaveli-bitly-url-shortener
  * Description: Bitly URL Shortener uses the Bitly API to generate short links without leaving your WordPress site.
  * Version: 1.5.0
- * Author: Codehaveli
+ * Author: Codehaveli, Rakesh Roy
  * Author URI: https://www.codehaveli.com/
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -12,7 +12,7 @@
  * Domain Path: /languages
  * Requires PHP: 7.4
  * Requires WP: 5.6
- * Tested WP: 6.3
+ * Tested up to: 6.9
  */
 
 // Admin components
