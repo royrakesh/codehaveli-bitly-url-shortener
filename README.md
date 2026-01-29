@@ -36,7 +36,7 @@ Bitly URL Shortener allows you to connect your WordPress Website to the Bitly AP
 
 This is not an official plugin of [https://bitly.com](https://bitly.com)
 
-This plugin only connects your [https://bitly.com](https://bitly.com) account to WordPress.
+This plugin only connects your [https://bitly.com](https://bitly.com) account to your WordPress site.
 
 Please read [privacy](https://bitly.com/pages/privacy) and [terms of service](https://bitly.com/pages/terms-of-service) of [Bitly](https://bitly.com) before using this plugin.
 
