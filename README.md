@@ -4,7 +4,7 @@ Tags: Bitly, Short url, Url shortener, post, connector, social share, gutenberg
 Requires at least: 5.6
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv2 or later
 Donate link: https://www.paypal.com/paypalme/royrakesh92
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -126,6 +126,9 @@ Both endpoints require authentication and appropriate permissions. You need to:
 
 
 == Changelog ==
+= 1.5.1 =
+
+* MetaBox issue fixed
 
 = 1.5.0 =
 * Added Gutenberg block for social share icons

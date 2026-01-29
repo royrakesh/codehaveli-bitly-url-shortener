@@ -43,12 +43,29 @@ class Metabox {
 			return;
 		}
 
-		$settings          = new Settings();
+		// Hide PHP metabox in block editor - use Gutenberg sidebar instead
+		$screen = get_current_screen();
+		if ( $screen && method_exists( $screen, 'is_block_editor' ) && $screen->is_block_editor() ) {
+			return;
+		}
+
 		$active_post_types = OptionManager::get( 'wbitly_custom_post', array( 'post' ) );
+		
+		// Remove duplicates to prevent multiple registrations
+		$active_post_types = array_unique( $active_post_types );
 
 		foreach ( $active_post_types as $post_type ) {
+			// Make metabox ID unique per post type to prevent duplicates
+			$metabox_id = 'wbitly-bitly-url-metabox-' . sanitize_key( $post_type );
+			
+			// Check if metabox already exists to prevent duplicates
+			global $wp_meta_boxes;
+			if ( isset( $wp_meta_boxes[ $post_type ]['side']['default'][ $metabox_id ] ) ) {
+				continue;
+			}
+			
 			add_meta_box(
-				'wbitly-bitly-url-metabox',
+				$metabox_id,
 				__( 'Bitly Short URL', 'wbitly' ),
 				array( self::class, 'render_metabox' ),
 				$post_type,

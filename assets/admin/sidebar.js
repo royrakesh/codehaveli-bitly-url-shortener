@@ -86,9 +86,80 @@ const WbitlySidebar = () => {
 		}
 
 		if (url) {
-			return el(
-				"div",
-				{ className: "wbitly-url-share" },
+			const socialIconsArray = [
+				el("a", {
+					href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+						url,
+					)}`,
+					target: "_blank",
+					rel: "noopener noreferrer",
+					className: "wbitly-icon wbitly-icon-facebook",
+					title: __('Share on Facebook', 'wbitly'),
+				}),
+
+				el("a", {
+					href: `mailto:?subject=${encodeURIComponent(__('Check this out', 'wbitly'))}&body=${encodeURIComponent(
+						url,
+					)}`,
+					className: "wbitly-icon wbitly-icon-email",
+					title: __('Share via Email', 'wbitly'),
+				}),
+
+				el("a", {
+					href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+						url,
+					)}`,
+					target: "_blank",
+					rel: "noopener noreferrer",
+					className: "wbitly-icon wbitly-icon-x",
+					title: __('Share on X (Twitter)', 'wbitly'),
+				}),
+
+				el(
+					"button",
+					{
+						onClick: () => {
+							if (
+								navigator.clipboard &&
+								typeof navigator.clipboard.writeText === "function"
+							) {
+								navigator.clipboard
+									.writeText(url)
+									.then(() =>
+										alert(__('URL copied to clipboard!', 'wbitly')),
+									)
+									.catch((err) => {
+										console.error("Clipboard copy failed", err);
+										alert(__('Copy failed. Try manually.', 'wbitly'));
+									});
+							} else {
+								const textarea = document.createElement("textarea");
+								textarea.value = url;
+								document.body.appendChild(textarea);
+								textarea.select();
+								try {
+									document.execCommand("copy");
+									alert(__('URL copied to clipboard!', 'wbitly'));
+								} catch (err) {
+									alert(__('Copy not supported', 'wbitly'));
+								}
+								document.body.removeChild(textarea);
+							}
+						},
+						className: "wbitly-icon wbitly-icon-copy",
+						title: __('Copy URL', 'wbitly'),
+						style: {
+							background: "none",
+							border: "none",
+							cursor: "pointer",
+							padding: 0,
+						},
+					},
+					" ",
+				),
+			];
+
+			const children = [
 				el(
 					"p",
 					null,
@@ -98,79 +169,13 @@ const WbitlySidebar = () => {
 						url,
 					),
 				),
-				el("div", { className: "wbitly-social-icons" }, [
-					el("a", {
-						href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-							url,
-						)}`,
-						target: "_blank",
-						rel: "noopener noreferrer",
-						className: "wbitly-icon wbitly-icon-facebook",
-						title: __('Share on Facebook', 'wbitly'),
-					}),
+			];
 
-					el("a", {
-						href: `mailto:?subject=${encodeURIComponent(__('Check this out', 'wbitly'))}&body=${encodeURIComponent(
-							url,
-						)}`,
-						className: "wbitly-icon wbitly-icon-email",
-						title: __('Share via Email', 'wbitly'),
-					}),
+			if (wbitlyPostData.socialEnabled) {
+				children.push(el("div", { className: "wbitly-social-icons" }, socialIconsArray));
+			}
 
-					el("a", {
-						href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-							url,
-						)}`,
-						target: "_blank",
-						rel: "noopener noreferrer",
-						className: "wbitly-icon wbitly-icon-x",
-						title: __('Share on X (Twitter)', 'wbitly'),
-					}),
-
-					el(
-						"button",
-						{
-							onClick: () => {
-								if (
-									navigator.clipboard &&
-									typeof navigator.clipboard.writeText === "function"
-								) {
-									navigator.clipboard
-										.writeText(url)
-										.then(() =>
-											alert(__('URL copied to clipboard!', 'wbitly')),
-										)
-										.catch((err) => {
-											console.error("Clipboard copy failed", err);
-											alert(__('Copy failed. Try manually.', 'wbitly'));
-										});
-								} else {
-									const textarea = document.createElement("textarea");
-									textarea.value = url;
-									document.body.appendChild(textarea);
-									textarea.select();
-									try {
-										document.execCommand("copy");
-										alert(__('URL copied to clipboard!', 'wbitly'));
-									} catch (err) {
-										alert(__('Copy not supported', 'wbitly'));
-									}
-									document.body.removeChild(textarea);
-								}
-							},
-							className: "wbitly-icon wbitly-icon-copy",
-							title: __('Copy URL', 'wbitly'),
-							style: {
-								background: "none",
-								border: "none",
-								cursor: "pointer",
-								padding: 0,
-							},
-						},
-						" ",
-					),
-				]),
-			);
+			return el("div", { className: "wbitly-url-share" }, children);
 		}
 
 		return el(
