@@ -9,6 +9,7 @@
 namespace Codehaveli\Wbitly\API;
 
 use Codehaveli\Wbitly\Admin\Manager;
+use Codehaveli\Wbitly\Admin\OptionManager;
 use Codehaveli\Wbitly\Util\Logger;
 use WP_Error;
 use WP_REST_Request;
@@ -182,6 +183,7 @@ class WpRest {
 		$esc_url     = esc_url( $short_url );
 		$encoded_url = rawurlencode( $short_url );
 		$title       = rawurlencode( get_the_title( $post_id ) );
+		$show_social = OptionManager::get( 'wbitly_social_share' ) === 'enable';
 
 		// Load the share.php template and capture output.
 		ob_start();
@@ -191,6 +193,7 @@ class WpRest {
 				'esc_url'     => $esc_url,
 				'encoded_url' => $encoded_url,
 				'title'       => $title,
+				'show_social' => $show_social,
 			)
 		);
 		$share_html = ob_get_clean();

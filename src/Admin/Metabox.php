@@ -88,23 +88,19 @@ class Metabox {
 		$bitly_url = get_wbitly_short_url( $post_id );
 
 		if ( $bitly_url ) {
-			echo '<div class="wbitly_tooltip wbitly copy_bitly">';
-			echo '<p><span class="copy_bitly_link wbitly-meta-bg-link">' . esc_html( $bitly_url ) . '</span></p>';
-			echo '</div>';
-
-			if ( OptionManager::get( 'wbitly_social_share' ) === 'enable' ) {
-				$esc_url     = esc_url( $bitly_url );
-				$encoded_url = rawurlencode( $bitly_url );
-				$title       = rawurlencode( get_the_title( $post_id ) );
-				wbitly_get_template(
-					'share.php',
-					array(
-						'esc_url'     => $esc_url,
-						'encoded_url' => $encoded_url,
-						'title'       => $title,
-					)
-				);
-			}
+			$esc_url     = esc_url( $bitly_url );
+			$encoded_url = rawurlencode( $bitly_url );
+			$title       = rawurlencode( get_the_title( $post_id ) );
+			$show_social = OptionManager::get( 'wbitly_social_share' ) === 'enable';
+			wbitly_get_template(
+				'share.php',
+				array(
+					'esc_url'     => $esc_url,
+					'encoded_url' => $encoded_url,
+					'title'       => $title,
+					'show_social' => $show_social,
+				)
+			);
 		} else {
 			echo '<div class="wbitly_tooltip">';
 			echo '<button class="wbitly generate_bitly button button-primary" data-post_id="' . esc_attr( $post_id ) . '">' . esc_html__( 'Generate URL', 'wbitly' ) . '</button>';

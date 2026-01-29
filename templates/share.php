@@ -2,6 +2,8 @@
 /** @var string $esc_url */
 /** @var string $encoded_url */
 /** @var string $title */
+/** @var bool $show_social */
+$show_social = isset( $show_social ) ? (bool) $show_social : false;
 ?>
 <div class="wbitly-url-share">
 	<p>
@@ -9,6 +11,7 @@
 			<?php echo esc_url( $esc_url ); ?>
 		</a>
 	</p>
+	<?php if ( $show_social ) : ?>
 	<div class="wbitly-social-icons">
 		<a href="<?php echo esc_url( 'https://www.facebook.com/sharer/sharer.php?u=' . $encoded_url ); ?>"
 			target="_blank" rel="noopener noreferrer"
@@ -30,4 +33,5 @@
 			data-copy-text="<?php echo esc_attr( $esc_url ); ?>"
 			style="background: none; border: none; cursor: pointer; padding: 0;"></button>
 	</div>
+	<?php endif; ?>
 </div>
