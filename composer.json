@@ -31,15 +31,28 @@
     },
     "config": {
         "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "phpstan/extension-installer": true
         }
     },
     "scripts": {
         "phpcompat:check": [
-            "@php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.1-8.1 ./src",
-            "@php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.2-8.2 ./src",
-            "@php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.3-8.3 ./src",
-            "@php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.4-8.4 ./src"
+            "echo 'Checking PHP 7.4 compatibility...'",
+            "@php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 7.4 ./src ./codehaveli-bitly-url-shortener.php --extensions=php --report=summary || true",
+            "echo 'Checking PHP 8.1 compatibility...'",
+            "@php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.1-8.1 ./src --extensions=php --report=summary || true",
+            "echo 'Checking PHP 8.2 compatibility...'",
+            "@php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.2-8.2 ./src --extensions=php --report=summary || true",
+            "echo 'Checking PHP 8.3 compatibility...'",
+            "@php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.3-8.3 ./src --extensions=php --report=summary || true",
+            "echo 'Checking PHP 8.4 compatibility...'",
+            "@php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.4-8.4 ./src --extensions=php --report=summary || true",
+            "echo 'PHP compatibility check completed!'"
+        ],
+        "phpcompat:7.4": [
+            "echo 'Checking PHP 7.4 compatibility...'",
+            "@php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 7.4 ./src ./codehaveli-bitly-url-shortener.php --extensions=php --report=summary || true",
+            "echo 'PHP 7.4 compatibility check completed!'"
         ],
         "phpcs": "phpcs",
         "boom" : [

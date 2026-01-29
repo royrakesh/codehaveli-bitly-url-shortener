@@ -21,6 +21,7 @@ yarn-error.log*
 # PHP dependencies
 composer.json
 composer.lock
+# Note: vendor/ is needed for autoload.php, but --no-dev ensures dev dependencies are excluded
 
 # Build configuration
 webpack.*.js
