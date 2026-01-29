@@ -3,6 +3,10 @@
 .github/
 .gitignore
 .gitattributes
+.editorconfig
+.distignore
+.wordpress-org/
+
 
 # Node.js dependencies and build tools
 node_modules/
@@ -15,7 +19,6 @@ yarn-error.log*
 .eslintcache
 
 # PHP dependencies
-vendor/
 composer.json
 composer.lock
 
@@ -53,8 +56,7 @@ logs/
 .env.local
 .env.*.local
 
-# Documentation (development)
-README.md
+
 
 # Temporary and build artifacts
 *.zip
