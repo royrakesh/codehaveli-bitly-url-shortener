@@ -22,7 +22,7 @@ jobs:
 
       - name: Update Readme
         run: |
-          cp readme.txt wordpress-svn/trunk/readme.txt
+          cp readme.txt wordpress-svn/trunk/README.md
 
       - name: Commit Readme to WordPress.org
         working-directory: wordpress-svn
@@ -30,8 +30,8 @@ jobs:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
         run: |
-          svn add --force trunk/readme.md
-          svn commit trunk/readme.md \
+          svn add --force trunk/README.md
+          svn commit trunk/README.md \
             --username "$SVN_USERNAME" \
             --password "$SVN_PASSWORD" \
             --no-auth-cache \
