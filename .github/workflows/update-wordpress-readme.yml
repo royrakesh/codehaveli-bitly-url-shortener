@@ -22,7 +22,7 @@ jobs:
 
       - name: Update Readme
         run: |
-          cp readme.txt wordpress-svn/trunk/README.md
+          cp README.md wordpress-svn/trunk/README.md
 
       - name: Commit Readme to WordPress.org
         working-directory: wordpress-svn
