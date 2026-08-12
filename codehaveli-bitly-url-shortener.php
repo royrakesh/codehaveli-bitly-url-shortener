@@ -3,7 +3,7 @@
  * Plugin Name: Bitly URL Shortener
  * Plugin URI: https://github.com/royrakesh/codehaveli-bitly-url-shortener
  * Description: Bitly URL Shortener uses the Bitly API to generate short links without leaving your WordPress site.
- * Version: 1.5.1
+ * Version: 1.5.2
  * Author: Codehaveli, Rakesh Roy
  * Author URI: https://www.codehaveli.com/
  * License: GPLv2 or later
