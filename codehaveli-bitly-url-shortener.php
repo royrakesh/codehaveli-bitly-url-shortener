@@ -12,7 +12,7 @@
  * Domain Path: /languages
  * Requires PHP: 7.4
  * Requires WP: 5.6
- * Tested up to: 6.9
+ * Tested up to: 7.0.3
  */
 
 // Admin components
