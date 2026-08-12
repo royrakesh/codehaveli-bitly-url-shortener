@@ -126,8 +126,11 @@ Both endpoints require authentication and appropriate permissions. You need to:
 
 
 == Changelog ==
-= 1.5.1 =
+= 1.5.2 =
 
+* WordPress Upto version updated
+
+= 1.5.1 =
 * MetaBox issue fixed
 
 = 1.5.0 =
