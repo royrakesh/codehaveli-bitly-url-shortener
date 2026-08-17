@@ -1,6 +1,6 @@
 {
 	"name": "Bitly-URL-Shortener",
-	"version": "1.5.2",
+	"version": "1.5.3",
 	"description": "Bitly URL Shortener uses the functionality of Bitly API to generate Bitly short link without leaving your WordPress site.",
 	"author": "Rakesh Roy",
 	"license": "GPL-2.0-or-later",
