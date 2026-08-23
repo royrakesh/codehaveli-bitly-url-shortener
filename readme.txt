@@ -2,7 +2,7 @@
 Contributors: codehaveli,royrakesh
 Tags: Bitly, Short url, Url shortener, post, connector, social share, gutenberg
 Requires at least: 5.6
-Tested up to: 7.0.4
+Tested up to: 7.1
 Requires PHP: 7.4
 Stable tag: 1.5.3
 License: GPLv2 or later
