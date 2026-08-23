@@ -10,29 +10,14 @@ jobs:
   update-readme:
     name: Update WordPress.org Readme
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
 
-      - name: Setup SVN
-        run: sudo apt-get update && sudo apt-get install -y subversion
-
-      - name: Checkout WordPress.org SVN
-        run: |
-          svn checkout https://plugins.svn.wordpress.org/codehaveli-bitly-url-shortener wordpress-svn
-
-      - name: Update Readme
-        run: |
-          cp README.md wordpress-svn/trunk/README.md
-
-      - name: Commit Readme to WordPress.org
-        working-directory: wordpress-svn
+      - name: Update WordPress.org readme
+        uses: 10up/action-wordpress-plugin-asset-update@stable
         env:
-          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-        run: |
-          svn add --force trunk/README.md
-          svn commit trunk/README.md \
-            --username "$SVN_USERNAME" \
-            --password "$SVN_PASSWORD" \
-            --no-auth-cache \
-            -m "Update WordPress compatibility"
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: codehaveli-bitly-url-shortener
+          SKIP_ASSETS: true
