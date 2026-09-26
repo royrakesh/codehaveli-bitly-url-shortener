@@ -13,7 +13,7 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -23,7 +23,7 @@ jobs:
           coverage: none
       
       - name: Cache Composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
           path: vendor
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -35,7 +35,7 @@ jobs:
       
       - name: Check PHP 7.4 Compatibility
         run: |
-          vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 7.4 ./src ./codehaveli-bitly-url-shortener.php --extensions=php --report=full || true
+          vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 7.4 ./src ./codehaveli-bitly-url-shortener.php --extensions=php --report=full
       
       - name: Check PHP Syntax
         run: |
@@ -43,7 +43,7 @@ jobs:
           find src -name "*.php" -exec php -l {} \;
       
       - name: Run PHPCS (WordPress Coding Standards)
-        run: vendor/bin/phpcs --standard=phpcs.xml || true
+        run: vendor/bin/phpcs --standard=phpcs.xml
 
   php-versions:
     name: Test on PHP ${{ matrix.php-version }}
@@ -59,7 +59,7 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       
       - name: Setup PHP ${{ matrix.php-version }}
         uses: shivammathur/setup-php@v2
@@ -69,7 +69,7 @@ jobs:
           coverage: none
       
       - name: Cache Composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
           path: vendor
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}

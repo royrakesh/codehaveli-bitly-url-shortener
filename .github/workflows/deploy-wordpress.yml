@@ -9,16 +9,18 @@ jobs:
     name: Deploy on Release
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v7
+      with:
+        ref: ${{ github.event.release.tag_name }}
     
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.1'
+        php-version: '8.4'
         tools: composer
     
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v7
       with: 
         node-version: '20'
         cache: 'npm'
@@ -41,7 +43,7 @@ jobs:
         SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
         SLUG: codehaveli-bitly-url-shortener
     - name: Upload release asset
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       env:
         # Note, this is an exception to action secrets: GH_TOKEN is always available and provides access to
         # the current repository this action runs in.
