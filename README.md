@@ -23,7 +23,7 @@
 ## 🛠️ System Requirements
 
 * **WordPress:** 5.6 or higher
-* **Tested up to:** WordPress 7.1
+* **Tested up to:** WordPress 7.1.2
 * **PHP:** 7.4 or higher
 * **Bitly Account:** Required
 

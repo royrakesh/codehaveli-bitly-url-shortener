@@ -22,7 +22,7 @@ $show_social = isset( $show_social ) ? (bool) $show_social : false;
 			class="wbitly-icon wbitly-icon-email"
 			title="<?php esc_attr_e( 'Share via Email', 'wbitly' ); ?>"></a>
 
-		<a href="<?php echo esc_url( 'https://twitter.com/intent/tweet?url=' . $encoded_url ); ?>"
+		<a href="<?php echo esc_url( 'https://x.com/intent/tweet?url=' . $encoded_url ); ?>"
 			target="_blank" rel="noopener noreferrer"
 			class="wbitly-icon wbitly-icon-x"
 			title="<?php esc_attr_e( 'Share on X (Twitter)', 'wbitly' ); ?>"></a>

@@ -2,9 +2,9 @@
 Contributors: codehaveli,royrakesh
 Tags: Bitly, Short url, Url shortener, post, connector, social share, gutenberg
 Requires at least: 5.6
-Tested up to: 7.1
+Tested up to: 7.1.2
 Requires PHP: 7.4
-Stable tag: 1.5.3
+Stable tag: 1.5.4
 License: GPLv2 or later
 Donate link: https://www.paypal.com/paypalme/royrakesh92
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -126,6 +126,9 @@ Both endpoints require authentication and appropriate permissions. You need to:
 
 
 == Changelog ==
+= 1.5.4 =
+* WordPress Up To version
+
 = 1.5.3 =
 * WordPress Upto version updated and small fix
   

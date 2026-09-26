@@ -106,7 +106,7 @@ const WbitlySidebar = () => {
 				}),
 
 				el("a", {
-					href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+					href: `https://x.com/intent/tweet?url=${encodeURIComponent(
 						url,
 					)}`,
 					target: "_blank",
